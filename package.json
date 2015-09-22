@@ -1,0 +1,22 @@
+{
+  "name": "playball",
+  "version": "0.1.0",
+  "description": "Watch MLB games from the comfort of your terminal",
+  "keywords": ["MLB", "gameday", "baseball", "cli"],
+  "dependencies": {
+    "chalk": "^1.1.0",
+    "xml2js": "^0.4.10",
+    "sprintf-js": "^1.0.3",
+    "request": "^2.60.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paaatrick/playball.git"
+  },
+  "author": "Patrick Kalita <patrick.kalita@gmail.com> (http://paaatrick.github.io/)",
+  "preferGlobal": true,
+  "license": "MIT",
+  "bin": {
+    "playball": "bin/playball"
+  }
+}
