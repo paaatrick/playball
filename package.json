@@ -1,6 +1,6 @@
 {
   "name": "playball",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Watch MLB games from the comfort of your terminal",
   "keywords": ["MLB", "gameday", "baseball", "cli"],
   "dependencies": {
