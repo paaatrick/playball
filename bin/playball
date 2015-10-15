@@ -192,7 +192,7 @@ function inProgress(playData) {
   if (showSideStart) {
     inningStatus();
     print.h2('%s Pitching - %s - %f ERA', state.pitchingTeam(),
-        playData.players.pitcher.boxname, playData.players.pitcher.era);
+        playData.players.pitcher.boxname, playData.players.pitcher.era || 0);
     showSideStart = false;
   }
 
