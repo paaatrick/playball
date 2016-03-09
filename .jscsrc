@@ -1,4 +1,4 @@
 {
-  "preset": "airbnb",
+  "preset": "node-style-guide",
   "requireCamelCaseOrUpperCaseIdentifiers": null
 }
