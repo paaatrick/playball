@@ -2,12 +2,18 @@
   "name": "playball",
   "version": "0.1.4",
   "description": "Watch MLB games from the comfort of your terminal",
-  "keywords": ["MLB", "gameday", "baseball", "cli"],
+  "keywords": [
+    "MLB",
+    "gameday",
+    "baseball",
+    "cli"
+  ],
   "dependencies": {
     "chalk": "^1.1.0",
-    "xml2js": "^0.4.10",
+    "q": "^1.4.1",
+    "q-io": "^1.13.2",
     "sprintf-js": "^1.0.3",
-    "request": "^2.60.0"
+    "xml2js": "^0.4.10"
   },
   "repository": {
     "type": "git",
