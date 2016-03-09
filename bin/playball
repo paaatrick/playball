@@ -2,24 +2,40 @@
 
 var sprintf = require('sprintf-js').sprintf;
 
-var GameDay = require('../lib/gameday');
-var GameState = require('../lib/game-state');
-var pitches = require('../lib/pitches');
+var gameday = require('../lib/gameday');
 var print = require('../lib/print');
-var utils = require('../lib/utils');
 
-var state = new GameState();
-var gameday = new GameDay();
-var lastShownEvent = 0;
-var showBatter = false;
-var showOuts = false;
-var showRuns = false;
-var showSideStart = false;
-var showSideEnd = false;
-var game;
+gameday.games()
+  .then(showGameList)
+  .then(startGame)
+  .done();
 
-gameday.getGameList(showGameList);
+function showGameList(games) {
+  if (games.length === 0) {
+    print.error('No games today');
+    process.exit();
+  }
 
+  function chooseGame(idx) {
+    return games[idx];
+  }
+
+  games.forEach(function(game, idx) {
+    console.log(
+      sprintf('[%d] ', idx) +
+      sprintf('%(away_name_abbrev)s @ %(home_name_abbrev)s - %(time)s %(ampm)s',
+        game));
+  });
+
+  return print.question('Which game?')
+    .then(chooseGame);
+}
+
+function startGame(game) {
+  console.log(game.game_data_directory);
+}
+
+/*
 function welcome(game) {
   if (state.teams.home.name) { return; }
 
@@ -315,3 +331,4 @@ function startGame(which) {
   registerGameListeners(game);
   game.start();
 }
+*/
