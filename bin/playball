@@ -1,14 +1,11 @@
 #!/usr/bin/env node
 
 var sprintf = require('sprintf-js').sprintf;
-
 var gameday = require('../lib/gameday');
 var print = require('../lib/print');
 
 gameday.games()
-  .then(showGameList)
-  .then(startGame)
-  .done();
+  .then(showGameList);
 
 function showGameList(games) {
   if (games.length === 0) {
@@ -21,18 +18,32 @@ function showGameList(games) {
   }
 
   games.forEach(function(game, idx) {
-    console.log(
-      sprintf('[%d] ', idx) +
-      sprintf('%(away_name_abbrev)s @ %(home_name_abbrev)s - %(time)s %(ampm)s',
-        game));
+    console.log('[' + idx + '] ' + game.disp);
   });
 
-  return print.question('Which game?')
-    .then(chooseGame);
+  print.question('Which game?')
+    .then(chooseGame)
+    .then(startGame)
+    .done();
 }
 
 function startGame(game) {
-  console.log(game.game_data_directory);
+  var events = ['Preview', 'Pre-Game', 'Warmup', 'Delayed', 'Delayed Start',
+    'In Progress', 'Replay', 'Review', 'Manager Challenge', 'Game Over',
+    'Final', 'Completed Early', 'Suspended', 'Postponed', 'Forfeit',
+    'Cancelled',];
+
+  function sayEvent(name) {
+    return function() {
+      console.log(name);
+    };
+  }
+
+  events.forEach(function(e) {
+    game.on(e, sayEvent(e));
+  });
+
+  game.start();
 }
 
 /*
@@ -314,8 +325,8 @@ function registerGameListeners(game) {
   game.once('Delayed', delayed);
   game.once('Delayed Start', delayed);
 
-  game.on('Preview', waitingForGame);
-  game.on('Pre-Game', waitingForGame);
+  'Preview', waitingForGame);
+  'Pre-Game', waitingForGame);
 
   game.once('Warmup', inWarmup);
   game.once('In Progress', gameUnderway);
@@ -323,7 +334,7 @@ function registerGameListeners(game) {
   game.once('Game Over', finalScore);
   game.once('Final', finalScore);
 
-  game.on('In Progress', inProgress);
+  'In Progress', inProgress);
 }
 
 function startGame(which) {
