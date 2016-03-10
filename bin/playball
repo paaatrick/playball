@@ -28,10 +28,10 @@ function showGameList(games) {
 }
 
 function startGame(game) {
-  var events = ['Preview', 'Pre-Game', 'Warmup', 'Delayed', 'Delayed Start',
-    'In Progress', 'Replay', 'Review', 'Manager Challenge', 'Game Over',
-    'Final', 'Completed Early', 'Suspended', 'Postponed', 'Forfeit',
-    'Cancelled',];
+  var events = ['preview', 'preGame', 'warmup', 'delayed', 'delayedStart',
+    'inProgress', 'replay', 'review', 'managerChallenge', 'gameOver',
+    'final', 'completedEarly', 'suspended', 'postponed', 'forfeit',
+    'cancelled',];
 
   function sayEvent(name) {
     return function() {
