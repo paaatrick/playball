@@ -13,8 +13,7 @@
     "moment-timezone": "^0.5.1",
     "q": "^1.4.1",
     "q-io": "^1.13.2",
-    "sprintf-js": "^1.0.3",
-    "xml2js": "^0.4.10"
+    "sprintf-js": "^1.0.3"
   },
   "repository": {
     "type": "git",
