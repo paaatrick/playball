@@ -3,6 +3,7 @@
 var sprintf = require('sprintf-js').sprintf;
 var gameday = require('../lib/gameday');
 var print = require('../lib/print');
+var utils = require('../lib/utils');
 
 gameday.games()
   .then(showGameList);
@@ -43,7 +44,13 @@ function startGame(game) {
     game.on(e, sayEvent(e));
   });
 
+  game.on('inning', showInning);
+
   game.start();
+}
+
+function showInning(inning) {
+  print.h3('%s of %s', inning.side, utils.ordinal(inning.num));
 }
 
 /*
