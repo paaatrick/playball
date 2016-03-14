@@ -11,6 +11,7 @@
   "dependencies": {
     "chalk": "^1.1.0",
     "moment-timezone": "^0.5.1",
+    "pixl-xml": "^1.0.6",
     "q": "^1.4.1",
     "q-io": "^1.13.2",
     "sprintf-js": "^1.0.3"
