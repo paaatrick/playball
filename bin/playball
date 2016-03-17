@@ -44,13 +44,29 @@ function startGame(game) {
     game.on(e, sayEvent(e));
   });
 
-  game.on('inning', showInning);
+  game.on('startInning', showInning);
+  game.on('endInning', showInning);
+  game.on('startAtbat', startAtbat);
+  game.on('endAtbat', endAtbat);
+  game.on('pitch', showPitch);
 
   game.start();
 }
 
 function showInning(inning) {
   print.h3('%s of %s', inning.side, utils.ordinal(inning.num));
+}
+
+function startAtbat(batter) {
+  print.h2('Now batting: %(boxname)s, %(avg)s AVG', batter);
+}
+
+function endAtbat(atbat) {
+  print.info(atbat.des);
+}
+
+function showPitch(pitch) {
+  print.info(pitch.des);
 }
 
 /*
