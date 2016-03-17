@@ -65,8 +65,15 @@ function endInning(inning) {
 }
 
 function startAtbat(batter) {
-  var message = sprintf('Now batting for %(team_abbrev)s: ' +
-    '%(boxname)s #%(num)s %(current_position)s', batter);
+  var message = sprintf('Now batting for %(team_abbrev)s: %(boxname)s', batter);
+  if (batter.num) {
+    message += ' #' + batter.num;
+  }
+  if (batter.current_position) {
+    message += ' ' + batter.current_position;
+  } else if (batter.current && batter.current.current_position) {
+    message += ' ' + batter.current.current_position;
+  }
   if (batter.current) {
     var atbats = XML.alwaysArray(batter.current.ab)[0];
     var hits = batter.current.h;
