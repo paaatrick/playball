@@ -4,6 +4,7 @@ var sprintf = require('sprintf-js').sprintf;
 var gameday = require('../lib/gameday');
 var print = require('../lib/print');
 var utils = require('../lib/utils');
+var XML = require('pixl-xml');
 
 gameday.games()
   .then(showGameList);
@@ -44,21 +45,35 @@ function startGame(game) {
     game.on(e, sayEvent(e));
   });
 
-  game.on('startInning', showInning);
-  game.on('endInning', showInning);
+  game.on('startInning', startInning);
+  game.on('endInning', endInning);
   game.on('startAtbat', startAtbat);
   game.on('endAtbat', endAtbat);
   game.on('pitch', showPitch);
+  game.on('action', showAction);
 
   game.start();
 }
 
-function showInning(inning) {
+function startInning(inning) {
   print.h3('%s of %s', inning.side, utils.ordinal(inning.num));
 }
 
+function endInning(inning) {
+  var status = (inning.side.toLowerCase() === 'top' ? 'Middle' : 'End');
+  print.h3('%s of %s', status, utils.ordinal(inning.num));
+}
+
 function startAtbat(batter) {
-  print.h2('Now batting: %(boxname)s, %(avg)s AVG', batter);
+  var message = sprintf('Now batting for %(team_abbrev)s: ' +
+    '%(boxname)s #%(num)s %(current_position)s', batter);
+  if (batter.current) {
+    var atbats = XML.alwaysArray(batter.current.ab)[0];
+    var hits = batter.current.h;
+    var avg = batter.current.avg;
+    message += sprintf(' - %s-%s, %s AVG', hits, atbats, avg);
+  }
+  print.h2(message);
 }
 
 function endAtbat(atbat) {
@@ -67,6 +82,10 @@ function endAtbat(atbat) {
 
 function showPitch(pitch) {
   print.info(pitch.des);
+}
+
+function showAction(action) {
+  print.info(action.des);
 }
 
 /*
