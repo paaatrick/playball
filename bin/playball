@@ -2,6 +2,7 @@
 
 var sprintf = require('sprintf-js').sprintf;
 var gameday = require('../lib/gameday');
+var pitches = require('../lib/pitches');
 var print = require('../lib/print');
 var utils = require('../lib/utils');
 var XML = require('pixl-xml');
@@ -51,6 +52,7 @@ function startGame(game) {
   game.on('endAtbat', endAtbat);
   game.on('pitch', showPitch);
   game.on('action', showAction);
+  game.on('scoreChange', showScore);
 
   game.start();
 }
@@ -88,11 +90,23 @@ function endAtbat(atbat) {
 }
 
 function showPitch(pitch) {
-  print.info(pitch.des);
+  var message = pitch.des;
+  if (pitch.start_speed) {
+    message += ' - ' + Math.round(+pitch.start_speed) + ' MPH';
+  }
+  if (pitch.pitch_type && pitches[pitch.pitch_type]) {
+    message += ' ' + pitches[pitch.pitch_type];
+  }
+  print.info(message);
 }
 
 function showAction(action) {
   print.info(action.des);
+}
+
+function showScore(teams) {
+  print.h1('%(away.name)s: %(away.runs)d - %(home.name)s: %(home.runs)d',
+           teams);
 }
 
 /*
