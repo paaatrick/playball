@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "chalk": "^1.1.0",
+    "lodash": "^4.6.1",
     "moment-timezone": "^0.5.1",
     "pixl-xml": "^1.0.6",
     "q": "^1.4.1",
