@@ -90,10 +90,7 @@ function startAtbat(batter) {
 
 function endAtbat(atbat) {
   print.info(atbat.des);
-  if (+atbat.o > outs) {
-    outs = +atbat.o;
-    print.h3('%d out', outs);
-  }
+  showOuts(+atbat.o);
 }
 
 function showPitch(pitch) {
@@ -109,11 +106,19 @@ function showPitch(pitch) {
 
 function showAction(action) {
   print.info(action.des);
+  showOuts(+action.o);
 }
 
 function showScore(teams) {
   print.h1('%(away.name)s: %(away.runs)d - %(home.name)s: %(home.runs)d',
            teams);
+}
+
+function showOuts(value) {
+  if (value > outs) {
+    outs = value;
+    print.h3('%d out', outs);
+  }
 }
 
 /*
