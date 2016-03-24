@@ -57,11 +57,14 @@ function startGame(game) {
   game.start();
 }
 
+var outs = 0;
+
 function startInning(inning) {
   print.h3('%s of %s', inning.side, utils.ordinal(inning.num));
 }
 
 function endInning(inning) {
+  outs = 0;
   var status = (inning.side.toLowerCase() === 'top' ? 'Middle' : 'End');
   print.h3('%s of %s', status, utils.ordinal(inning.num));
 }
@@ -87,6 +90,10 @@ function startAtbat(batter) {
 
 function endAtbat(atbat) {
   print.info(atbat.des);
+  if (+atbat.o > outs) {
+    outs = +atbat.o;
+    print.h3('%d out', outs);
+  }
 }
 
 function showPitch(pitch) {
