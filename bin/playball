@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+var _ = require('lodash');
+var chalk = require('chalk');
 var sprintf = require('sprintf-js').sprintf;
 var gameday = require('../lib/gameday');
 var pitches = require('../lib/pitches');
@@ -31,7 +33,7 @@ function showGameList(games) {
 
 function startGame(game) {
   var events = ['preview', 'preGame', 'warmup', 'delayed', 'delayedStart',
-    'inProgress', 'replay', 'review', 'managerChallenge', 'gameOver',
+    'inProgress', 'replay', 'review', 'managerChallenge',
     'final', 'completedEarly', 'suspended', 'postponed', 'forfeit',
     'cancelled',];
 
@@ -52,6 +54,7 @@ function startGame(game) {
   game.on('pitch', showPitch);
   game.on('action', showAction);
   game.on('scoreChange', showScore);
+  game.on('gameOver', showFinalScore);
 
   game.start();
 }
@@ -118,6 +121,37 @@ function showOuts(value) {
     outs = value;
     print.h3('%d out', outs);
   }
+}
+
+function showFinalScore(linescore) {
+  var teamPad = 2;
+  var teamSize = Math.max(linescore.away_team_name.length,
+    linescore.home_team_name.length) + teamPad;
+  var headerRow = _.padEnd('', teamSize);
+  var awayRow = _.padEnd(linescore.away_team_name, teamSize);
+  var homeRow = _.padEnd(linescore.home_team_name, teamSize);
+  linescore.linescore.forEach(function(inning) {
+    headerRow += sprintf('%3s |', inning.inning);
+    awayRow += sprintf('%3s |', inning.away_inning_runs);
+    homeRow += sprintf('%3s |', inning.home_inning_runs);
+  });
+  headerRow += '  R |';
+  awayRow += chalk.bold(sprintf('%3s', linescore.away_team_runs)) + ' |';
+  homeRow += chalk.bold(sprintf('%3s', linescore.home_team_runs)) + ' |';
+  headerRow += '  H |';
+  awayRow += sprintf('%3s |', linescore.away_team_hits);
+  homeRow += sprintf('%3s |', linescore.home_team_hits);
+  headerRow += '  E';
+  awayRow += sprintf('%3s', linescore.away_team_errors);
+  homeRow += sprintf('%3s', linescore.home_team_errors);
+  print.pre(headerRow);
+  print.pre(_.pad('', headerRow.length, '-'));
+  print.pre(awayRow);
+  print.pre(homeRow);
+  print.info('W: %(last_name)s (%(wins)s-%(losses)s)',
+    linescore.winning_pitcher);
+  print.info('L: %(last_name)s (%(wins)s-%(losses)s)',
+    linescore.losing_pitcher);
 }
 
 /*
