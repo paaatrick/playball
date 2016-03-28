@@ -69,7 +69,7 @@ function endInning(inning) {
 }
 
 function startAtbat(batter) {
-  var message = sprintf('Now batting for %(team_abbrev)s: %(boxname)s', batter);
+  var message = sprintf('%(team.name)s batting: %(boxname)s', batter);
   if (batter.num) {
     message += ' #' + batter.num;
   }
