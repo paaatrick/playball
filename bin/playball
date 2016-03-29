@@ -32,20 +32,9 @@ function showGameList(games) {
 }
 
 function startGame(game) {
-  var events = ['preview', 'preGame', 'warmup', 'delayed', 'delayedStart',
-    'inProgress', 'replay', 'review', 'managerChallenge',
-    'final', 'completedEarly', 'suspended', 'postponed', 'forfeit',
-    'cancelled',];
-
-  function sayEvent(name) {
-    return function() {
-      console.log(name);
-    };
-  }
-
-  events.forEach(function(e) {
-    game.on(e, sayEvent(e));
-  });
+  game.once('preview', waitingForGame);
+  game.once('preGame', waitingForGame);
+  game.once('warmup', inWarmup);
 
   game.on('startInning', startInning);
   game.on('endInning', endInning);
@@ -54,12 +43,30 @@ function startGame(game) {
   game.on('pitch', showPitch);
   game.on('action', showAction);
   game.on('scoreChange', showScore);
+
+  game.once('delayed', showStatusAndReason);
+  game.once('delayedStart', showStatusAndReason);
+
   game.on('gameOver', showFinalScore);
+
+  game.once('completedEarly', showStatusAndReason);
+  game.once('suspended', showStatusAndReason);
+  game.once('postponed', showStatusAndReason);
+  game.once('forfeit', showStatusAndReason);
+  game.once('cancelled', showStatusAndReason);
 
   game.start();
 }
 
 var outs = 0;
+
+function waitingForGame() {
+  print.info('Waiting for game to start');
+}
+
+function inWarmup(game) {
+  print.info('In warmup');
+}
 
 function startInning(inning) {
   print.h3('%s of %s', inning.side, utils.ordinal(inning.num));
@@ -123,6 +130,14 @@ function showOuts(value) {
   }
 }
 
+function showStatusAndReason(game) {
+  var message = game.status;
+  if (game.reason) {
+    message += ': ' + game.reason;
+  }
+  print.warn(message);
+}
+
 function showFinalScore(linescore) {
   var teamPad = 2;
   var teamSize = Math.max(linescore.away_team_name.length,
@@ -152,6 +167,10 @@ function showFinalScore(linescore) {
     linescore.winning_pitcher);
   print.info('L: %(last_name)s (%(wins)s-%(losses)s)',
     linescore.losing_pitcher);
+  if (linescore.save_pitcher && linescore.save_pitcher.last_name) {
+    print.info('SV: %(last_name)s (%(saves)s)',
+      linescore.save_pitcher);
+  }
 }
 
 /*
@@ -169,285 +188,5 @@ function welcome(game) {
 
   print.h1('%(away.name)s (%(away.record)s) @ %(home.name)s (%(home.record)s)', state.teams);
   print.h1(game.venue);
-}
-
-function waitingForGame() {
-  print.info('Waiting for Game to Start');
-}
-
-function finalScore(game) {
-  print.h1('Final Score: ' + state.getScore());
-}
-
-function delayed(game) {
-  print.warn('Gamed Delayed - ' + game.reason);
-  waitingForGame();
-}
-
-function inWarmup(game) {
-  print.h2('In Warmup');
-}
-
-function gameUnderway(game) {
-  print.h2('Game is Underway');
-}
-
-function inningStatus() {
-  print.h3('%s of %s', state.inningSide, utils.ordinal(state.inningNum));
-}
-
-function addPitchEvent(atbat, pitch) {
-  var message = sprintf('%s - %d MPH %s',
-      pitch.des, Math.round(pitch.start_speed), pitches[pitch.pitch_type]);
-  state.events[pitch.event_num] = {
-    message: message,
-    showCount: pitch.type !== 'X',
-    atbat: atbat,
-  };
-}
-
-function addPickoffEvent(atbat, event) {
-  state.events[event.event_num] = {
-    message: event.des,
-    showCount: false,
-    atbat: atbat,
-  };
-}
-
-function addActionEvent(event) {
-  state.events[event.event_num] = {
-    message: event.des,
-    showCount: false,
-    atbat: null,
-  };
-}
-
-function addAtBatEvent(atbat) {
-  var eventNum = parseInt(atbat.$.event_num);
-  state.events[eventNum] = {
-    message: atbat.$.des,
-    showCount: false,
-    atbat: atbat.$.num,
-  };
-
-  atbat.pitch.forEach(function(pitch) {
-    addPitchEvent(atbat.$.num, pitch.$);
-  });
-}
-
-function inProgress(playData) {
-  if (!playData) { return; }
-
-  if (playData.inning_state && playData.inning_state !== state.inningSide) {
-    showSideStart = playData.inning_state === 'Top' || playData.inning_state === 'Bottom';
-    showSideEnd = playData.inning_state === 'Middle' || playData.inning_state === 'End';
-    state.inningSide = playData.inning_state;
-    state.inningNum = playData.inning;
-  }
-
-  if (playData.players && playData.players.batter) {
-    state.batterChanged = playData.players.batter.pid !== state.batterId;
-    if (state.batterChanged) {
-      state.batterId = playData.players.batter.pid;
-      utils.ensureArray(playData.players.batter, 'ab');
-      state.batterDisplay = sprintf('%(boxname)s - %(h)d for %(ab[0])d, %(avg)f AVG',
-          playData.players.batter);
-      showBatter = true;
-    }
-  }
-
-  if (playData.o && playData.o !== state.outs) {
-    state.outs = playData.o;
-    showOuts = true;
-  }
-
-  if (playData.atbat) {
-    var atbat = playData.atbat;
-
-    if (atbat.p) {
-      utils.ensureArray(atbat, 'p');
-      atbat.p.forEach(addPitchEvent.bind(null, atbat.num));
-    }
-
-    if (atbat.po) {
-      utils.ensureArray(atbat, 'po');
-      atbat.po.forEach(addPickoffEvent.bind(null, atbat.num));
-    }
-
-    var runners = [false, false, false];
-    if (atbat.runner) {
-      utils.ensureArray(atbat, 'runner');
-      atbat.runner.forEach(function(runner) {
-        var f = runner.end ? 'end' : 'start';
-        if (runner[f] === '1B') {
-          runners[0] = true;
-        }
-
-        if (runner[f] === '2B') {
-          runners[1] = true;
-        }
-
-        if (runner[f] === '3B') {
-          runners[2] = true;
-        }
-      });
-    }
-
-    state.runnerChanged = state.runners[0] !== runners[0] ||
-                          state.runners[1] !== runners[1] ||
-                          state.runners[2] !== runners[2];
-    state.runners = runners;
-  }
-
-  if (playData.score) {
-    var homeRuns = playData.score.hr;
-    var awayRuns = playData.score.ar;
-    var runsChanged = state.runs.home !== homeRuns ||
-                      state.runs.away !== awayRuns;
-    if (runsChanged) {
-      state.runs = { home: homeRuns, away: awayRuns };
-      showRuns = true;
-    }
-  }
-
-  if (playData.action) {
-    utils.ensureArray(playData, 'action');
-    playData.action.forEach(addActionEvent);
-  }
-
-  if (state.batterChanged || state.runnerChanged || showRuns || showSideEnd) {
-    state.inningDataPending = true;
-    setTimeout(fetchInningData, 2000);
-  }
-
-  if (state.inningDataPending) {
-    return;
-  }
-
-  if (showSideStart) {
-    inningStatus();
-    print.h2('%s Pitching - %s - %f ERA',
-        state.pitchingTeam(),
-        playData.players.pitcher.boxname,
-        typeof playData.players.pitcher.era === 'number' ? playData.players.pitcher.era : 0);
-    showSideStart = false;
-  }
-
-  if (showBatter) {
-    print.h2('%s Batting - %s', state.battingTeam(), state.batterDisplay);
-    showBatter = false;
-  }
-
-  var showCount = false;
-  state.events.forEach(function(event, num) {
-    if (num <= lastShownEvent) { return; }
-
-    print.info(event.message);
-    lastShownEvent = num;
-    showCount = event.showCount;
-  });
-
-  if (showCount) {
-    print.info('%(b)d-%(s)d', playData);
-  }
-
-}
-
-function fetchInningData() {
-  game.getInningData(state.inningNum, function(err, inningData) {
-    if (err) { return; }
-
-    var side = (state.inningSide === 'Top' || state.inningSide === 'Middle') ? 'top' : 'bottom';
-    if (!inningData[side]) { return; }
-
-    var lastAtBat = 0;
-    if (inningData[side][0].atbat) {
-      inningData[side][0].atbat.forEach(function(atbat) {
-        addAtBatEvent(atbat);
-        lastAtBat = atbat.$.num;
-      });
-    }
-
-    if (inningData[side][0].action) {
-      inningData[side][0].action.forEach(function(action) {
-        addActionEvent(action.$);
-      });
-    }
-
-    state.events.forEach(function(event, num) {
-      if (num <= lastShownEvent) { return; }
-
-      if (event.atbat && event.atbat > lastAtBat) { return; }
-
-      print.info(event.message);
-      lastShownEvent = num;
-    });
-
-    if (showRuns) {
-      print.h1(state.getScore());
-      showRuns = false;
-    }
-
-    if (showOuts && state.outs > 0) {
-      print.h3('%d out', state.outs);
-      showOuts = false;
-    }
-
-    if (showSideEnd) {
-      inningStatus();
-      showSideEnd = false;
-    }
-
-    state.inningDataPending = false;
-  });
-}
-
-function showGameList(error, gameList) {
-  if (error) {
-    print.error('Error while fetching today\'s games');
-    process.exit();
-  }
-
-  if (gameList.length === 0) {
-    print.error('No games today');
-    process.exit();
-  }
-
-  gameList.forEach(function(game, idx) {
-    console.log(sprintf('[%d] %s', idx, game));
-  });
-
-  print.question('Which game?', startGame);
-}
-
-function registerGameListeners(game) {
-  game.once('Preview', welcome);
-  game.once('Pre-Game', welcome);
-  game.once('Warmup', welcome);
-  game.once('Delayed', welcome);
-  game.once('Delayed Start', welcome);
-  game.once('In Progress', welcome);
-  game.once('Game Over', welcome);
-  game.once('Final', welcome);
-
-  game.once('Delayed', delayed);
-  game.once('Delayed Start', delayed);
-
-  'Preview', waitingForGame);
-  'Pre-Game', waitingForGame);
-
-  game.once('Warmup', inWarmup);
-  game.once('In Progress', gameUnderway);
-
-  game.once('Game Over', finalScore);
-  game.once('Final', finalScore);
-
-  'In Progress', inProgress);
-}
-
-function startGame(which) {
-  game = gameday.getGame(which);
-  registerGameListeners(game);
-  game.start();
 }
 */
