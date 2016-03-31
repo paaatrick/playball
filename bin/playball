@@ -47,6 +47,7 @@ function startGame(game) {
   game.once('delayed', showStatusAndReason);
   game.once('delayedStart', showStatusAndReason);
 
+  game.on('final', showFinalScore);
   game.on('gameOver', showFinalScore);
 
   game.once('completedEarly', showStatusAndReason);
