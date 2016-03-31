@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-var _ = require('lodash');
-var chalk = require('chalk');
-var sprintf = require('sprintf-js').sprintf;
-var gameday = require('../lib/gameday');
-var pitches = require('../lib/pitches');
-var print = require('../lib/print');
-var utils = require('../lib/utils');
+const _ = require('lodash');
+const chalk = require('chalk');
+const sprintf = require('sprintf-js').sprintf;
+const gameday = require('../lib/gameday');
+const pitches = require('../lib/pitches');
+const print = require('../lib/print');
+const utils = require('../lib/utils');
 
 gameday.games()
   .then(showGameList);
@@ -21,9 +21,7 @@ function showGameList(games) {
     return games[idx];
   }
 
-  games.forEach(function(game, idx) {
-    console.log('[' + idx + '] ' + game.disp);
-  });
+  games.forEach((game, idx) => console.log('[' + idx + '] ' + game.disp));
 
   print.question('Which game?')
     .then(chooseGame)
@@ -146,7 +144,7 @@ function showFinalScore(linescore) {
   var headerRow = _.padEnd('', teamSize);
   var awayRow = _.padEnd(linescore.away_team_name, teamSize);
   var homeRow = _.padEnd(linescore.home_team_name, teamSize);
-  linescore.linescore.forEach(function(inning) {
+  linescore.linescore.forEach((inning) => {
     headerRow += sprintf('%3s |', inning.inning);
     awayRow += sprintf('%3s |', inning.away_inning_runs);
     homeRow += sprintf('%3s |', inning.home_inning_runs);
