@@ -77,23 +77,35 @@ function endInning(inning) {
   print.h3('%s of %s', status, utils.ordinal(inning.num));
 }
 
-function startAtbat(batter) {
-  var message = sprintf('%(team.name)s batting: %(boxname)s', batter);
-  if (batter.num) {
-    message += ' #' + batter.num;
+function startAtbat(atbat) {
+  var pitcher = sprintf('%(team.name)s pitching: %(boxname)s', atbat.pitcher);
+  if (atbat.pitcher.num) {
+    pitcher += ' #' + atbat.pitcher.num;
   }
-  if (batter.current_position) {
-    message += ' ' + batter.current_position;
-  } else if (batter.current && batter.current.current_position) {
-    message += ' ' + batter.current.current_position;
+  if (atbat.pitcher.current) {
+    pitcher += sprintf(
+      ' - %(era)s ERA, %(pitches)sP (%(strikes)sS, %(balls)sB)',
+      atbat.pitcher.current);
   }
-  if (batter.current) {
-    var atbats = utils.asArray(batter.current.ab)[0];
-    var hits = batter.current.h;
-    var avg = batter.current.avg;
-    message += sprintf(' - %s-%s, %s AVG', hits, atbats, avg);
+
+  var batter = sprintf('%(team.name)s batting: %(boxname)s', atbat.batter);
+  if (atbat.batter.num) {
+    batter += ' #' + atbat.batter.num;
   }
-  print.h2(message);
+  if (atbat.batter.current_position) {
+    batter += ' ' + atbat.batter.current_position;
+  } else if (atbat.batter.current && atbat.batter.current.current_position) {
+    batter += ' ' + atbat.batter.current.current_position;
+  }
+  if (atbat.batter.current) {
+    var atbats = utils.asArray(atbat.batter.current.ab)[0];
+    var hits = atbat.batter.current.h;
+    var avg = atbat.batter.current.avg;
+    batter += sprintf(' - %s-%s, %s AVG', hits, atbats, avg);
+  }
+
+  print.h2(pitcher);
+  print.h2(batter);
 }
 
 function endAtbat(atbat) {
@@ -171,21 +183,3 @@ function showFinalScore(linescore) {
       linescore.save_pitcher);
   }
 }
-
-/*
-function welcome(game) {
-  if (state.teams.home.name) { return; }
-
-  state.teams.home = {
-    name: game.home_team_name,
-    record: sprintf('%(home_win)d-%(home_loss)d', game),
-  };
-  state.teams.away = {
-    name: game.away_team_name,
-    record: sprintf('%(away_win)d-%(away_loss)d', game),
-  };
-
-  print.h1('%(away.name)s (%(away.record)s) @ %(home.name)s (%(home.record)s)', state.teams);
-  print.h1(game.venue);
-}
-*/
