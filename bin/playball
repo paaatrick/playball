@@ -57,7 +57,7 @@ function startGame(game) {
   game.start();
 }
 
-var outs = 0;
+var count = {b: 0, s: 0, o: 0};
 
 function waitingForGame() {
   print.info('Waiting for game to start');
@@ -72,7 +72,7 @@ function startInning(inning) {
 }
 
 function endInning(inning) {
-  outs = 0;
+  count.o = 0;
   var status = (inning.side.toLowerCase() === 'top' ? 'Middle' : 'End');
   print.h3('%s of %s', status, utils.ordinal(inning.num));
 }
@@ -111,15 +111,20 @@ function startAtbat(atbat) {
 function endAtbat(atbat) {
   print.info(atbat.des);
   showOuts(+atbat.o);
+  resetCount();
 }
 
 function showPitch(pitch) {
+  updateCount(pitch);
   var message = pitch.des;
   if (pitch.start_speed) {
-    message += ' - ' + Math.round(+pitch.start_speed) + ' MPH';
+    message += sprintf(' - %d MPH', Math.round(+pitch.start_speed));
   }
   if (pitch.pitch_type && pitches[pitch.pitch_type]) {
     message += ' ' + pitches[pitch.pitch_type];
+  }
+  if (pitch.type !== 'X') {
+    message += sprintf(' - %(b)d-%(s)d', count);
   }
   print.info(message);
 }
@@ -135,9 +140,9 @@ function showScore(teams) {
 }
 
 function showOuts(value) {
-  if (value > outs) {
-    outs = value;
-    print.h3('%d out', outs);
+  if (value > count.o) {
+    count.o = value;
+    print.h3('%d out', count.o);
   }
 }
 
@@ -181,5 +186,24 @@ function showFinalScore(linescore) {
   if (linescore.save_pitcher && linescore.save_pitcher.last_name) {
     print.info('SV: %(last_name)s (%(saves)s)',
       linescore.save_pitcher);
+  }
+}
+
+function resetCount() {
+  count.s = 0;
+  count.b = 0;
+}
+
+function updateCount(pitch) {
+  if (pitch.type === 'B') {
+    count.b += 1;
+  }
+
+  var isFoul = pitch.des === 'Foul' ||
+    pitch.des === 'Foul Bunt' ||
+    pitch.des === 'Foul (Runner Going)';
+
+  if (pitch.type === 'S' && !(isFoul && count.s === 2)) {
+    count.s += 1;
   }
 }
