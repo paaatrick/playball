@@ -199,9 +199,7 @@ function updateCount(pitch) {
     count.b += 1;
   }
 
-  var isFoul = pitch.des === 'Foul' ||
-    pitch.des === 'Foul Bunt' ||
-    pitch.des === 'Foul (Runner Going)';
+  var isFoul = pitch.des.startsWith('Foul') && pitch.des !== 'Foul Tip'
 
   if (pitch.type === 'S' && !(isFoul && count.s === 2)) {
     count.s += 1;
