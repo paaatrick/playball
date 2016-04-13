@@ -140,7 +140,7 @@ function showScore(teams) {
 }
 
 function showOuts(value) {
-  if (value > count.o) {
+  if (value !== count.o) {
     count.o = value;
     print.h3('%d out', count.o);
   }
