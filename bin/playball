@@ -179,10 +179,14 @@ function showFinalScore(linescore) {
   print.pre(_.pad('', headerRow.length, '-'));
   print.pre(awayRow);
   print.pre(homeRow);
-  print.info('W: %(last_name)s (%(wins)s-%(losses)s)',
-    linescore.winning_pitcher);
-  print.info('L: %(last_name)s (%(wins)s-%(losses)s)',
-    linescore.losing_pitcher);
+  if (linescore.winning_pitcher && linescore.winning_pitcher.last_name) {
+    print.info('W: %(last_name)s (%(wins)s-%(losses)s)',
+      linescore.winning_pitcher);
+  }
+  if (linescore.losing_pitcher && linescore.losing_pitcher.last_name) {
+    print.info('L: %(last_name)s (%(wins)s-%(losses)s)',
+      linescore.losing_pitcher);
+  }
   if (linescore.save_pitcher && linescore.save_pitcher.last_name) {
     print.info('SV: %(last_name)s (%(saves)s)',
       linescore.save_pitcher);
@@ -203,5 +207,9 @@ function updateCount(pitch) {
 
   if (pitch.type === 'S' && !(isFoul && count.s === 2)) {
     count.s += 1;
+  }
+
+  if (pitch.type === 'X') {
+    resetCount();
   }
 }
