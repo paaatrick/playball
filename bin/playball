@@ -208,8 +208,4 @@ function updateCount(pitch) {
   if (pitch.type === 'S' && !(isFoul && count.s === 2)) {
     count.s += 1;
   }
-
-  if (pitch.type === 'X') {
-    resetCount();
-  }
 }
