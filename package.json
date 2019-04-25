@@ -1,30 +1,68 @@
 {
   "name": "playball",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Watch MLB games from the comfort of your terminal",
   "keywords": [
     "MLB",
     "gameday",
     "baseball",
-    "cli"
+    "cli",
+    "terminal"
   ],
-  "dependencies": {
-    "chalk": "^1.1.0",
-    "lodash": "^4.6.1",
-    "moment-timezone": "^0.5.1",
-    "pixl-xml": "^1.0.6",
-    "q": "^1.4.1",
-    "q-io": "^1.13.2",
-    "sprintf-js": "^1.0.3"
+  "scripts": {
+    "build": "npm run lint && npm run clean && npm run compile",
+    "clean": "rimraf ./dist",
+    "compile": "babel src --out-dir dist",
+    "lint": "eslint src",
+    "start": "babel-node ./src/main.js",
+    "prepublish": "npm run build"
+  },
+  "main": "dist/main.js",
+  "bin": {
+    "playball": "./bin/playball.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/paaatrick/playball.git"
   },
   "author": "Patrick Kalita <patrick.kalita@gmail.com> (http://paaatrick.github.io/)",
+  "bugs": {
+    "url": "https://github.com/paaatrick/playball/issues"
+  },
+  "homepage": "https://github.com/paaatrick/playball",
   "preferGlobal": true,
   "license": "MIT",
-  "bin": {
-    "playball": "bin/playball"
+  "dependencies": {
+    "axios": "^0.18.0",
+    "blessed": "^0.1.81",
+    "immutable": "^3.8.2",
+    "moment": "^2.24.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.8.6",
+    "react-blessed": "^0.5.0",
+    "react-devtools-core": "^3.6.1",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.6.1",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1",
+    "winston": "^3.1.0",
+    "ws": "^6.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.2",
+    "@babel/preset-react": "^7.0.0",
+    "eslint": "^5.15.3",
+    "eslint-plugin-react": "^7.12.4",
+    "rimraf": "^2.6.3"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
   }
 }

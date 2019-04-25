@@ -1,1 +1,7 @@
-node_modules
+# IDE stuff
+.vscode/
+
+# generated stuff
+dist/
+node_modules/
+*.log
