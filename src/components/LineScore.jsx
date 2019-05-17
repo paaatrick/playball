@@ -38,7 +38,7 @@ class LineScore extends React.Component {
       away.padEnd(teamNameLength) + getTeamLine(linescore, totalInnings, 'away', final) + '\n' +
       home.padEnd(teamNameLength) + getTeamLine(linescore, totalInnings, 'home', final);
     return (
-      <box align={align} content={str} tags />
+      <box align={align} content={str} tags wrap={false} />
     );
   }
 }

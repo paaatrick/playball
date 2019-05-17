@@ -32,7 +32,7 @@ const Matchup = ({boxscore, currentPlay, teams}) => {
       `{bold}${batter.person.fullName}{/bold} ${batter.stats.batting.hits}-${batter.stats.batting.atBats}, ${batter.seasonStats.batting.avg} AVG, ${batter.seasonStats.batting.homeRuns} HR`;
 
     return (
-      <box tags content={display} />
+      <box tags content={display} wrap={false} />
     );
   } catch(error) {
     throw error;

@@ -17,7 +17,7 @@ export const LiveGame = () => {
         <element left='25%+1' width='25%'>
           <Bases />
         </element>
-        <element left='50%+2' width='50%'>
+        <element left='50%+2' width='50%-2'>
           <LineScore />
         </element>
       </element>
@@ -32,7 +32,7 @@ export const LiveGame = () => {
           </element>
         </element>
         <line orientation='vertical' type='line' left='50%' />
-        <element left='50%+2' width='50%-1'>
+        <element left='50%+2' width='50%-2'>
           <AllPlays />
         </element>
       </element>
