@@ -23,7 +23,7 @@ $ playball
 key | action
 ----|--------
 <kbd>q</kbd> | quit
-<kbd>&uarr;</kbd>, <kbd>&darr;</kbd> | change highlighted game in list; scroll list of plays in game
+<kbd>&darr;</kbd> / <kbd>j</kbd>, <kbd>&uarr;</kbd> / <kbd>k</kbd> | change highlighted game in list; scroll list of plays in game
 <kbd>enter</kbd> | view highlighted game in list
 <kbd>l</kbd> | return to list of games
 

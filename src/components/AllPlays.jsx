@@ -52,6 +52,7 @@ class AllPlays extends React.Component {
         focused 
         mouse 
         keys 
+        vi
         scrollable 
         scrollbar={style.scrollbar} 
         alwaysScroll 

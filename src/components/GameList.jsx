@@ -68,6 +68,7 @@ class GameList extends React.Component {
         width='80%'
         height='80%'
         keys
+        vi
         focused
         border={{type: 'line'}}
         label=' Select a game '
