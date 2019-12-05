@@ -62,6 +62,24 @@ class GameList extends React.Component {
 
   render() {
     const { loading, schedule } = this.props;
+    const messageStyle = {
+      left: 'center',
+      top: 'center',
+      height: '80%',
+      width: '80%',
+      border: {type: 'line'},
+      align: 'center',
+      valign: 'middle',
+    };
+
+    if (loading) {
+      return <box {...messageStyle} content='Loading...' />;
+    }
+
+    if (schedule && !schedule.dates.length) {
+      return <box {...messageStyle} content='No games today' />;
+    }
+
     return (
       <list left='center'
         top='center'
@@ -74,7 +92,7 @@ class GameList extends React.Component {
         label=' Select a game '
         scrollbar={style.scrollbar}
         style={style.list}
-        items={loading ? ['loading'] : (schedule ? schedule.dates[0].games.map(formatGame) : [])}
+        items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
         onSelect={this.handleGameSelect}
       />
     );
