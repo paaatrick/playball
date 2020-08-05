@@ -15,7 +15,7 @@
     "compile": "babel src --out-dir dist",
     "lint": "eslint src",
     "start": "babel-node ./src/main.js",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "main": "dist/main.js",
   "bin": {
