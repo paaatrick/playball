@@ -67,6 +67,11 @@ const selectGameData = createSelector(
   game => game.get('gameData')
 );
 
+export const selectGameStatus = createSelector(
+  selectGameData,
+  game => game.get('status')
+);
+
 export const selectTeams = createSelector(
   selectGameData,
   gameData => gameData.get('teams')
