@@ -8,13 +8,18 @@ Watch MLB games from the comfort of your own terminal
 great, but sometimes you want to keep an eye on a game a bit more discreetly.
 `playball` puts the game in a terminal window.
 
+### Quick Start
+Just want to try it out?
+```
+$ npx playball
+```
+
 ### Install
+Ready for the big leagues? Install the package globally
 ```
 $ npm install -g playball
 ```
-
-### Run
-No options, just run it
+Then run it
 ```
 $ playball
 ```
