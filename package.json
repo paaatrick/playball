@@ -36,6 +36,7 @@
     "axios": "^0.18.0",
     "blessed": "^0.1.81",
     "immutable": "^3.8.2",
+    "json-patch": "^0.7.0",
     "moment": "^2.24.0",
     "prop-types": "^15.6.2",
     "react": "^16.8.6",

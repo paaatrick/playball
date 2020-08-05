@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { selectGame, selectSelectedId } from '../selectors/game';
+import { selectGame, selectSelectedId, selectFullUpdateRequired } from '../selectors/game';
 import { fetchGame } from '../actions/game';
 
 import PreviewGame from './PreviewGame';
@@ -25,8 +25,8 @@ class Game extends React.Component {
   }
 
   updateGameData() {
-    const { fetchGame, game, id } = this.props;
-    const start = game && game.getIn(['metaData', 'timeStamp']);
+    const { fetchGame, game, id, fullUpdateRequired } = this.props;
+    const start = fullUpdateRequired ? null : (game && game.getIn(['metaData', 'timeStamp']));
     fetchGame(id, start)
       .then(() => {
         const wait = ((game && game.getIn(['metaData', 'wait'])) || 10) * 1000;
@@ -61,10 +61,12 @@ Game.propTypes = {
   fetchGame: PropTypes.func,
   game: PropTypes.object,
   id: PropTypes.number,
+  fullUpdateRequired: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({
   game: selectGame(state),
+  fullUpdateRequired: selectFullUpdateRequired(state),
   id: selectSelectedId(state),
 });
 

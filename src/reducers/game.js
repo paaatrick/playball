@@ -1,27 +1,16 @@
 import { handleActions } from 'redux-actions';
 import { fromJS, Map } from 'immutable';
+import jsonpatch from 'json-patch';
 
 import { REQUEST_GAME, RECIEVE_GAME, SET_SELECTED_GAME } from '../actions/types';
 
 const DEFAULT_STATE = fromJS({
   loading: false,
+  fullUpdateRequired: false,
   error: null,
   selectedId: null,
   games: {},
 });
-
-const convertPath = path => (
-  path
-    .substring(1)
-    .split('/')
-    .map(p => {
-      const asNum = parseInt(p, 10);
-      if (!isNaN(asNum)) {
-        return asNum;
-      }
-      return p;
-    })
-);
 
 export default handleActions({
   [REQUEST_GAME]: state => state.set('loading', true),
@@ -29,42 +18,37 @@ export default handleActions({
     next: (state, action) => {
       let games = state.get('games');
       const selectedId = state.get('selectedId');
-      let game = games.get(selectedId) || Map();
+      let game = (games.get(selectedId) || Map()).toJS();
+      let patchError = false;
       if (Array.isArray(action.payload)) {
-        game = game.withMutations(mutableData => {
-          action.payload.forEach(obj => obj.diff.forEach(diff => {
-            const path = convertPath(diff.path);
-            switch (diff.op) {
-            case 'replace':
-            case 'add':
-              mutableData.setIn(path, fromJS(diff.value));
-              break;
-              
-            case 'remove':
-              mutableData.deleteIn(path);
-              break;
-  
-            case 'move': {
-              const fromPath = convertPath(diff.from);
-              const fromValue = game.getIn(fromPath);
-              mutableData.setIn(path, fromValue);
-              mutableData.deleteIn(fromPath);
-              break;
-            }}
-          }));
+        action.payload.forEach(obj => {
+          if (patchError) {
+            return;
+          }
+          try {
+            jsonpatch.apply(game, obj.diff);
+          } catch (e) {
+            patchError = true;
+            return;
+          }
         });
       } else {
-        game = fromJS(action.payload);
+        game = action.payload;
       }
-      games = games.set(selectedId, game);
+      if (patchError) {
+        return state.set('fullUpdateRequired', true);
+      }
+      games = games.set(selectedId, fromJS(game));
       return state
         .set('loading', false)
+        .set('fullUpdateRequired', false)
         .set('error', null)
         .set('games', games);
     },
     throw: (state, action) => (
       state
         .set('loading', false)
+        .set('fullUpdateRequired', true)
         .set('error', action.payload)
     )
   },

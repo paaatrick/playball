@@ -12,6 +12,11 @@ export const selectError = createSelector(
   root => root.get('error')
 );
 
+export const selectFullUpdateRequired = createSelector(
+  gameRoot,
+  root => root.get('fullUpdateRequired')
+);
+
 export const selectSelectedId = createSelector(
   gameRoot,
   root => root.get('selectedId')
