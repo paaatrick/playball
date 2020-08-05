@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import GameList from './GameList';
 import Game from './Game';
 import HelpBar from './HelpBar';
+import fs from 'fs';
 
 import { setSelectedGame } from '../actions/game';
-import { selectSelectedId } from '../selectors/game';
+import { selectGame, selectSelectedId } from '../selectors/game';
 
 import winston from 'winston';
 
@@ -14,6 +15,13 @@ class App extends React.Component {
   componentDidMount() {
     const { onKeyPress, setSelectedGame } = this.props;
     onKeyPress(['l'], () => setSelectedGame(null));
+    onKeyPress(['C-d'], () => {
+      const { selectedGame, game } = this.props;
+      fs.writeFileSync(
+        selectedGame + '_' + Date.now() + '.json',
+        JSON.stringify(game, null, 2)
+      );
+    });
   }
 
   componentDidCatch(error, info) {
@@ -48,10 +56,12 @@ App.propTypes = {
   onKeyPress: PropTypes.func,
   selectedGame: PropTypes.number,
   setSelectedGame: PropTypes.func,
+  game: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
-  selectedGame: selectSelectedId(state)
+  selectedGame: selectSelectedId(state),
+  game: selectGame(state),
 });
 
 const mapDispatchToProps = {
