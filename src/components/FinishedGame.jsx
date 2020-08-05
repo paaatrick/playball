@@ -43,7 +43,7 @@ const formatScore = (status, linescore) => {
       display += '\n' + status.get('reason');
     }
   } else {
-    display = `\n${linescore.getIn(['teams', 'away', 'runs'])} - ${linescore.getIn(['teams', 'home', 'runs'])}`
+    display = `\n${linescore.getIn(['teams', 'away', 'runs'])} - ${linescore.getIn(['teams', 'home', 'runs'])}`;
   }
   return display;
 };

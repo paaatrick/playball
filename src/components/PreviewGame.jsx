@@ -4,6 +4,15 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers } from '../selectors/game';
 
+const formatPitcherName = (pitcher) => {
+  let display = pitcher.getIn(['person', 'fullName']);
+  const number = pitcher.get('jerseyNumber');
+  if (number) {
+    display += `, #${number}`;
+  }
+  return display;
+};
+
 const formatTeam = (teams, probables, boxscore, homeAway) => {
   const pitcherId = probables.getIn([homeAway, 'id']);
   const pitcher = boxscore.getIn([homeAway, 'players', 'ID' + pitcherId]);
@@ -14,7 +23,7 @@ const formatTeam = (teams, probables, boxscore, homeAway) => {
   if (pitcher) {
     lines = lines.concat([
       '',
-      `${pitcher.getIn(['person', 'fullName'])}, #${pitcher.get('jerseyNumber')}`,
+      formatPitcherName(pitcher),
       `${pitcher.getIn(['seasonStats', 'pitching', 'wins'])}-${pitcher.getIn(['seasonStats', 'pitching', 'losses'])}`,
       `${pitcher.getIn(['seasonStats', 'pitching', 'era'])} ERA ${pitcher.getIn(['seasonStats', 'pitching', 'strikeOuts'])} K`,
     ]);
