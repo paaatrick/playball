@@ -8,11 +8,13 @@ import { fetchSchedule } from '../actions/schedule';
 import style from '../style';
 
 const formatGame = game => {
-  const start = moment(game.gameDate)
-    .format('LT')
-    .padStart(8);
+  const startTime = moment(game.gameDate)
+    .format('LT');
+  const start = (game.doubleHeader === 'Y' && game.gameNumber > 1) ? 
+    'Game ' + game.gameNumber :
+    startTime;
   const teamName = (team) => `${team.team.teamName} (${team.leagueRecord.wins}-${team.leagueRecord.losses})`;
-  let content = `${start}  ${teamName(game.teams.away)} at ${teamName(game.teams.home)}`;
+  let content = `${start.padStart(8)}  ${teamName(game.teams.away)} at ${teamName(game.teams.home)}`;
   const gameState = game.status.abstractGameCode;
   const detailedState = game.status.detailedState;
   switch (gameState) {
