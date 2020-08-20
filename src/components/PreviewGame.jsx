@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers } from '../selectors/game';
+import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers, selectGameStatus } from '../selectors/game';
 
 const formatPitcherName = (pitcher) => {
   let display = pitcher.getIn(['person', 'fullName']);
@@ -31,10 +31,12 @@ const formatTeam = (teams, probables, boxscore, homeAway) => {
   return lines;
 };
 
-const PreviewGame = ({boxscore, probables, startTime, teams, venue}) => {
+const PreviewGame = ({boxscore, probables, startTime, status, teams, venue}) => {
   const away = formatTeam(teams, probables, boxscore, 'away');
   const home = formatTeam(teams, probables, boxscore, 'home');
-  const formattedStart = moment(startTime).format('LLL');
+  const formattedStart = status.get('startTimeTBD') ? 
+    'Start time TBD' : 
+    moment(startTime).format('LLL');
   return (
     <element>
       <element height='60%'>
@@ -50,6 +52,7 @@ PreviewGame.propTypes = {
   boxscore: PropTypes.object,
   probables: PropTypes.object,
   startTime: PropTypes.string,
+  status: PropTypes.object,
   teams: PropTypes.object,
   venue: PropTypes.object,
 };
@@ -58,6 +61,7 @@ const mapStateToProps = state => ({
   boxscore: selectBoxscore(state),
   probables: selectProbablePitchers(state),
   startTime: selectStartTime(state),
+  status: selectGameStatus(state),
   teams: selectTeams(state),
   venue: selectVenue(state),
 });
