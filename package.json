@@ -33,7 +33,7 @@
   "preferGlobal": true,
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "blessed": "^0.1.81",
     "immutable": "^3.8.2",
     "json-patch": "^0.7.0",
