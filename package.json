@@ -33,6 +33,7 @@
   "preferGlobal": true,
   "license": "MIT",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.0",
     "axios": "^0.19.2",
     "blessed": "^0.1.81",
     "immutable": "^3.8.2",
@@ -42,8 +43,8 @@
     "react": "^17.0.2",
     "react-blessed": "^0.7.2",
     "react-devtools-core": "^4.24.2",
-    "react-redux": "^5.0.7",
-    "redux": "^4.0.0",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
     "redux-actions": "^2.6.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
@@ -56,6 +57,7 @@
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "^7.6.0",
     "eslint-plugin-react": "^7.20.5",
     "rimraf": "^2.6.3"
@@ -64,6 +66,13 @@
     "presets": [
       "@babel/preset-env",
       "@babel/preset-react"
+    ],
+    "plugins": [
+      ["module-resolver", {
+        "alias": {
+          "react-redux": "react-redux/lib/alternate-renderers"
+        }
+      }]
     ]
   }
 }
