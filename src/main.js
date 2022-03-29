@@ -12,11 +12,16 @@ const screen = blessed.screen({
   autoPadding: true,
   debug: true,
   smartCSR: true,
-  title: 'Playball!'
+  title: 'Playball!',
+  handleUncaughtExceptions: false,
 });
 
 screen.key(['escape', 'q', 'C-c'], () => {
   return process.exit(0);
+});
+
+process.on('uncaughtException', function(error) {
+  console.log(error)
 });
 
 render(

@@ -1,9 +1,8 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { selectLoading, selectError, selectData } from '../selectors/schedule';
-import { fetchSchedule } from '../actions/schedule';
+import { fetchSchedule, selectData, selectLoading } from '../features/schedule'
 
 import style from '../style';
 
@@ -46,77 +45,58 @@ const formatGame = game => {
   return content;
 };
 
-class GameList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleGameSelect = this.handleGameSelect.bind(this);
-  }
+function GameList({ onGameSelect }) {
+  const dispatch = useDispatch()
+  const schedule = useSelector(selectData)
+  const loading = useSelector(selectLoading)
 
-  componentDidMount() {
-    this.props.fetchSchedule();
-  }
+  useEffect(() => {
+    dispatch(fetchSchedule())
+  }, [])
 
-  handleGameSelect(item, idx) {
-    const { onGameSelect, schedule } = this.props;
+  const handleGameSelect = (item, idx) => {
     const selected = schedule.dates[0].games[idx];
     onGameSelect(selected);
   }
 
-  render() {
-    const { loading, schedule } = this.props;
-    const messageStyle = {
-      left: 'center',
-      top: 'center',
-      height: '80%',
-      width: '80%',
-      border: {type: 'line'},
-      align: 'center',
-      valign: 'middle',
-    };
+  const messageStyle = {
+    left: 'center',
+    top: 'center',
+    height: '80%',
+    width: '80%',
+    border: {type: 'line'},
+    align: 'center',
+    valign: 'middle',
+  };
 
-    if (loading) {
-      return <box {...messageStyle} content='Loading...' />;
-    }
-
-    if (schedule && !schedule.dates.length) {
-      return <box {...messageStyle} content='No games today' />;
-    }
-
-    return (
-      <list left='center'
-        top='center'
-        width='80%'
-        height='80%'
-        keys
-        vi
-        focused
-        border={{type: 'line'}}
-        label=' Select a game '
-        scrollbar={style.scrollbar}
-        style={style.list}
-        items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
-        onSelect={this.handleGameSelect}
-      />
-    );
+  if (loading) {
+    return <box {...messageStyle} content='Loading...' />;
   }
+
+  if (schedule && !schedule.dates.length) {
+    return <box {...messageStyle} content='No games today' />;
+  }
+
+  return (
+    <list left='center'
+      top='center'
+      width='80%'
+      height='80%'
+      keys
+      vi
+      focused
+      border={{type: 'line'}}
+      label=' Select a game '
+      scrollbar={style.scrollbar}
+      style={style.list}
+      items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
+      onSelect={handleGameSelect}
+    />
+  );
 }
 
 GameList.propTypes = {
-  error: PropTypes.object,
-  fetchSchedule: PropTypes.func,
-  loading: PropTypes.bool,
   onGameSelect: PropTypes.func,
-  schedule: PropTypes.object,
 };
 
-const mapStateToProps = state => ({
-  loading: selectLoading(state),
-  error: selectError(state),
-  schedule: selectData(state),
-});
-
-const mapDispatchToProps = {
-  fetchSchedule
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(GameList);
+export default GameList;

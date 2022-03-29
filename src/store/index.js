@@ -1,9 +1,9 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { configureStore } from '@reduxjs/toolkit'
 
-import reducers from '../reducers';
+import schedule from '../features/schedule'
 
-export default createStore(
-  reducers,
-  applyMiddleware(thunk)
-);
+export default configureStore({
+  reducer: {
+    schedule
+  }
+});

@@ -15,7 +15,8 @@
     "compile": "babel src --out-dir dist",
     "lint": "eslint src",
     "start": "babel-node ./src/main.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "react-devtools": "react-devtools"
   },
   "main": "dist/main.js",
   "bin": {
@@ -60,6 +61,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "^7.6.0",
     "eslint-plugin-react": "^7.20.5",
+    "react-devtools": "^4.24.2",
     "rimraf": "^2.6.3"
   },
   "babel": {
@@ -68,11 +70,14 @@
       "@babel/preset-react"
     ],
     "plugins": [
-      ["module-resolver", {
-        "alias": {
-          "react-redux": "react-redux/lib/alternate-renderers"
+      [
+        "module-resolver",
+        {
+          "alias": {
+            "react-redux": "react-redux/lib/alternate-renderers"
+          }
         }
-      }]
+      ]
     ]
   }
 }
