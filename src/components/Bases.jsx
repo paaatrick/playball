@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { selectGame } from '../selectors/game';
+import { selectLineScore } from '../features/games';
 
-const formatBase = (offense, base) => offense.has(base) ? '{yellow-fg}◆{/yellow-fg}' : '◇';
+const formatBase = (offense, base) => (base in offense) ? '{yellow-fg}◆{/yellow-fg}' : '◇';
 
-const Bases = ({align, game}) => {
-  const offense = game.getIn(['liveData', 'linescore', 'offense']);
+function Bases({align}) {
+  const { offense } = useSelector(selectLineScore);
   const content = 
     `  ${formatBase(offense, 'second')}\n` + 
     `${formatBase(offense, 'third')}   ${formatBase(offense, 'first')}`;
@@ -16,12 +16,7 @@ const Bases = ({align, game}) => {
 };
 
 Bases.propTypes = {
-  align: PropTypes.string, 
-  game: PropTypes.object,  
+  align: PropTypes.string
 };
 
-const mapStateToProps = state => ({
-  game: selectGame(state),
-});
-
-export default connect(mapStateToProps)(Bases);
+export default Bases;

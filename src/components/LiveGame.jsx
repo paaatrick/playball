@@ -7,7 +7,7 @@ import Matchup from './Matchup';
 import AtBat from './AtBat';
 import AllPlays from './AllPlays';
 
-export const LiveGame = () => {
+function LiveGame()  {
   return (
     <element>
       <element top={0} left={1} width='100%-1' height={3}>
