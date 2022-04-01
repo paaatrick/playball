@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import GameList from './GameList';
 // import Game from './Game';
 import HelpBar from './HelpBar';
+import { selectSelectedId, setSelectedId } from '../features/games';
+import Game from './Game';
 // import fs from 'fs';
 
 // import { setSelectedGame } from '../actions/game';
@@ -10,7 +13,7 @@ import HelpBar from './HelpBar';
 
 // import winston from 'winston';
 
-function App() {
+function App({ onKeyPress }) {
   // componentDidMount() {
   //   const { onKeyPress, setSelectedGame } = this.props;
   //   onKeyPress(['l'], () => setSelectedGame(null));
@@ -22,11 +25,17 @@ function App() {
   //     );
   //   });
   // }
+  const dispatch = useDispatch()
+  const selectedGameId = useSelector(selectSelectedId)
+
+  useEffect(() => {
+    onKeyPress(['l'], () => dispatch(setSelectedId(null)))
+  }, [])
   
   return (
     <element>
       <element top={0} left={0} height='100%-1'>
-        <GameList onGameSelect={() => {}} />
+        { selectedGameId ? <Game /> : <GameList onGameSelect={game => dispatch(setSelectedId(game.gamePk))} /> }
       </element>
       <element top='100%-1' left={0} height={1}>
         <HelpBar />
@@ -38,9 +47,6 @@ function App() {
 App.propTypes = {
   debug: PropTypes.func,
   onKeyPress: PropTypes.func,
-  selectedGame: PropTypes.number,
-  setSelectedGame: PropTypes.func,
-  game: PropTypes.object,
 };
 
 export default App;
