@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../selectors/game';
+import { useSelector } from 'react-redux';
+import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games';
 import LineScore from './LineScore';
 
 const getPlayer = (id, boxscore) => {
-  const homePlayer = boxscore.getIn(['home', 'players', 'ID' + id]);
+  const homePlayer = boxscore.home?.players?.['ID' + id];
   if (homePlayer !== undefined) {
     return homePlayer;
   }
-  return boxscore.getIn(['away', 'players', 'ID' + id]);
+  return boxscore.away?.players['ID' + id];
 };
 
 const formatDecisions = (decisions, boxscore) => {
@@ -17,40 +17,46 @@ const formatDecisions = (decisions, boxscore) => {
     return '';
   }
   const content = [];
-  const winner = decisions.get('winner');
+  const winner = decisions.winner;
   if (winner) {
-    const pitcher = getPlayer(winner.get('id'), boxscore);
-    content.push(`Win:  ${pitcher.getIn(['person', 'fullName'])} (${pitcher.getIn(['seasonStats', 'pitching', 'wins'])}-${pitcher.getIn(['seasonStats', 'pitching', 'losses'])})`);
+    const pitcher = getPlayer(winner.id, boxscore);
+    content.push(`Win:  ${pitcher.person.fullName} (${pitcher.seasonStats?.pitching?.wins}-${pitcher.seasonStats?.pitching?.losses})`);
   }
-  const loser = decisions.get('loser');
+  const loser = decisions.loser;
   if (loser) {
-    const pitcher = getPlayer(loser.get('id'), boxscore);
-    content.push(`Loss: ${pitcher.getIn(['person', 'fullName'])} (${pitcher.getIn(['seasonStats', 'pitching', 'wins'])}-${pitcher.getIn(['seasonStats', 'pitching', 'losses'])})`);
+    const pitcher = getPlayer(loser.id, boxscore);
+    content.push(`Loss: ${pitcher.person.fullName} (${pitcher.seasonStats?.pitching?.wins}-${pitcher.seasonStats?.pitching?.losses})`);
   }
-  const save = decisions.get('save');
+  const save = decisions.save;
   if (save) {
-    const pitcher = getPlayer(save.get('id'), boxscore);
-    content.push(`Save: ${pitcher.getIn(['person', 'fullName'])} (${pitcher.getIn(['seasonStats', 'pitching', 'saves'])})`);
+    const pitcher = getPlayer(save.id, boxscore);
+    content.push(`Save: ${pitcher.person.fullName} (${pitcher.seasonStats?.pitching.saves})`);
   }
   return content.join('\n');
 };
 
 const formatScore = (status, linescore) => {
   let display = '';
-  if (status.get('detailedState') === 'Postponed') {
-    display = status.get('detailedState');
-    if (status.get('reason')) {
-      display += '\n' + status.get('reason');
+  if (status.detailedState === 'Postponed') {
+    display = status.detailedState;
+    if (status.reason) {
+      display += '\n' + status.reason;
     }
   } else {
-    display = `\n${linescore.getIn(['teams', 'away', 'runs'])} - ${linescore.getIn(['teams', 'home', 'runs'])}`;
+    display = `\n${linescore.teams.away.runs} - ${linescore.teams.home.runs}`;
   }
   return display;
 };
 
-const FinishedGame = ({boxscore, decisions, linescore, status, teams}) => {
-  const awayTeam = `${teams.getIn(['away', 'teamName'])}\n(${teams.getIn(['away', 'record', 'wins'])}-${teams.getIn(['away', 'record', 'losses'])})`;
-  const homeTeam = `${teams.getIn(['home', 'teamName'])}\n(${teams.getIn(['home', 'record', 'wins'])}-${teams.getIn(['home', 'record', 'losses'])})`;
+function FinishedGame() {
+  const boxscore = useSelector(selectBoxscore)
+  const decisions = useSelector(selectDecisions)
+  const linescore = useSelector(selectLineScore)
+  const status = useSelector(selectGameStatus)
+  const teams = useSelector(selectTeams)
+
+  const awayTeam = `${teams.away.teamName}\n(${teams.away.record.wins}-${teams.away.record.losses})`;
+  const homeTeam = `${teams.home.teamName}\n(${teams.home.record.wins}-${teams.home.record.losses})`;
   return (
     <element>
       <element height='60%'>
@@ -68,20 +74,6 @@ const FinishedGame = ({boxscore, decisions, linescore, status, teams}) => {
   );
 };
 
-FinishedGame.propTypes = {
-  boxscore: PropTypes.object,
-  decisions: PropTypes.object,
-  linescore: PropTypes.object,
-  status: PropTypes.object,
-  teams: PropTypes.object,
-};
+FinishedGame.propTypes = { };
 
-const mapStateToProps = state => ({
-  boxscore: selectBoxscore(state),
-  decisions: selectDecisions(state),
-  linescore: selectLineScore(state),
-  status: selectGameStatus(state),
-  teams: selectTeams(state),
-});
-
-export default connect(mapStateToProps)(FinishedGame);
+export default FinishedGame;

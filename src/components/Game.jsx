@@ -52,7 +52,7 @@ function Game() {
   }
 
   return (
-    <element>{JSON.stringify(game)}</element>
+    <element><Wrapped /></element>
   );
 }
 

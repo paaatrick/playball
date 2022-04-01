@@ -7,5 +7,8 @@ export default configureStore({
   reducer: {
     schedule,
     games
-  }
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  })
 });

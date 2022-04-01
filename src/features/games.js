@@ -131,7 +131,7 @@ export const selectLineScore = createSelector(
 
 export const selectDecisions = createSelector(
   selectLiveData,
-  data => data.get('decisions')
+  data => data.decisions
 );
 
 const selectGameData = createSelector(
