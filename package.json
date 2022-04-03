@@ -46,8 +46,7 @@
     "react-devtools-core": "^4.24.2",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
-    "winston": "^3.3.3",
-    "ws": "^6.2.1"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
