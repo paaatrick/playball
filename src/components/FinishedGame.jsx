@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games';
 import LineScore from './LineScore';
@@ -73,7 +72,5 @@ function FinishedGame() {
     </element>
   );
 };
-
-FinishedGame.propTypes = { };
 
 export default FinishedGame;

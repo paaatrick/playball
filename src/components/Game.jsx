@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import logger from '../logger'
 
 import { fetchGame, selectGame, selectSelectedId, selectFullUpdateRequired } from '../features/games';
 
@@ -55,7 +53,5 @@ function Game() {
     <element><Wrapped /></element>
   );
 }
-
-Game.propTypes = { };
 
 export default Game;

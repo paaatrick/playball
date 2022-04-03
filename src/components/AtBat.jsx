@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { selectCurrentPlay } from '../features/games';
 
 function AtBat() {
@@ -31,11 +30,6 @@ function AtBat() {
   return (
     <box content={content} tags />
   );
-};
-
-AtBat.propTypes = {
-  boxscore: PropTypes.object,
-  currentPlay: PropTypes.object,
 };
 
 export default AtBat;

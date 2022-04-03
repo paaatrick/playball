@@ -45,7 +45,7 @@ function LineScore({ align, final }) {
 }
 
 LineScore.propTypes = {
-  align: PropTypes.string, 
+  align: PropTypes.oneOf(['left', 'center', 'right']), 
   final: PropTypes.bool,
 };
 

@@ -16,7 +16,7 @@ function Bases({align}) {
 };
 
 Bases.propTypes = {
-  align: PropTypes.string
+  align: PropTypes.oneOf(['left', 'center', 'right']),
 };
 
 export default Bases;

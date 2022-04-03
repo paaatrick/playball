@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers, selectGameStatus } from '../features/games';
@@ -53,7 +52,5 @@ function PreviewGame() {
     </element>
   );
 };
-
-PreviewGame.propTypes = { };
 
 export default PreviewGame;

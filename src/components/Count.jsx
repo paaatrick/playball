@@ -18,7 +18,7 @@ function Count({align}) {
 };
 
 Count.propTypes = {
-  align: PropTypes.string,
+  align: PropTypes.oneOf(['left', 'center', 'right']),
 };
 
 export default Count;

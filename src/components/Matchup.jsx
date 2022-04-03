@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { selectCurrentPlay, selectBoxscore, selectTeams } from '../features/games';
 
 const getPlayerStats = (boxscore, teams, id) => {
@@ -38,7 +37,5 @@ function Matchup() {
     <box tags content={display} wrap={false} />
   );
 };
-
-Matchup.propTypes = { };
 
 export default Matchup;

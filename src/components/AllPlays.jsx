@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { selectAllPlays, selectTeams } from '../features/games';
 
@@ -61,7 +60,5 @@ function AllPlays() {
     />
   );
 }
-
-AllPlays.propTypes = { };
 
 export default AllPlays;
