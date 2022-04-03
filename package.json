@@ -35,7 +35,7 @@
   "license": "MIT",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.0",
-    "axios": "^0.19.2",
+    "axios": "^0.26.1",
     "blessed": "^0.1.81",
     "json-patch": "^0.7.0",
     "moment": "^2.24.0",
