@@ -24,7 +24,7 @@ screen.key(['escape', 'q', 'C-c'], () => {
 });
 
 process.on('uncaughtException', function(error) {
-  log.error(error)
+  log.error(error);
 });
 
 render(

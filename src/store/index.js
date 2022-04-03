@@ -1,7 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit';
 
-import schedule from '../features/schedule'
-import games from '../features/games'
+import schedule from '../features/schedule';
+import games from '../features/games';
 
 export default configureStore({
   reducer: {

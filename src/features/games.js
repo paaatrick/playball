@@ -1,7 +1,7 @@
-import axios from 'axios'
-import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit'
+import axios from 'axios';
+import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
 import jsonpatch from 'json-patch';
-import logger from '../logger'
+import logger from '../logger';
 
 const initialState = {
   loading: false,
@@ -9,68 +9,68 @@ const initialState = {
   error: null,
   selectedId: null,
   games: {},
-}
+};
 
 export const fetchGame = createAsyncThunk(
   'games/fetch',
   async ({id, start}) => {
     const diffParams = start ? `/diffPatch?startTimecode=${start}` : '';
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
-    logger.info(url)
-    const response = await axios.get(url)
-    return response.data
+    logger.info(url);
+    const response = await axios.get(url);
+    return response.data;
   }
-)
+);
 
 export const gamesSlice = createSlice({
   name: 'games',
   initialState,
   reducers: { 
     setSelectedId(state, action) {
-      state.selectedId = action.payload
+      state.selectedId = action.payload;
     }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchGame.pending, (state) => {
-      state.loading = true
-    })
+      state.loading = true;
+    });
     builder.addCase(fetchGame.fulfilled, (state, action) => {
-      const id = state.selectedId
-      let game = state.games[id]
-      let patchError = false
+      const id = state.selectedId;
+      let game = state.games[id];
+      let patchError = false;
       if (Array.isArray(action.payload)) {
         action.payload.forEach(obj => {
           if (patchError) {
-            return
+            return;
           }
           try {
-            jsonpatch.apply(game || {}, obj.diff)
+            jsonpatch.apply(game || {}, obj.diff);
           } catch (e) {
-            patchError = true
-            return
+            patchError = true;
+            return;
           }
         });
       } else {
-        game = action.payload
+        game = action.payload;
       }
       if (patchError) {
-        state.fullUpdateRequired = true
+        state.fullUpdateRequired = true;
       } else {
-        state.fullUpdateRequired = false
-        state.error = null
-        state.games[id] = game
+        state.fullUpdateRequired = false;
+        state.error = null;
+        state.games[id] = game;
       }
-      state.loading = false
-    })
+      state.loading = false;
+    });
     builder.addCase(fetchGame.rejected, (state, action) => {
-      state.fullUpdateRequired = true
-      state.loading = false
-      state.error = action.error
-    })
+      state.fullUpdateRequired = true;
+      state.loading = false;
+      state.error = action.error;
+    });
   }
-})
+});
 
-export const { setSelectedId } = gamesSlice.actions
+export const { setSelectedId } = gamesSlice.actions;
 
 const gamesRoot = state => state.games;
 
@@ -164,4 +164,4 @@ export const selectProbablePitchers = createSelector(
   gameData => gameData.probablePitchers
 );
 
-export default gamesSlice.reducer
+export default gamesSlice.reducer;
