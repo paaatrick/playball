@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { fetchSchedule, selectData, selectLoading } from '../features/schedule'
 
 import style from '../style';
 
 const formatGame = game => {
-  const startTime = moment(game.gameDate)
-    .format('LT');
+  const startTime = format(new Date(game.gameDate), 'p');
   const start = (game.doubleHeader === 'Y' && game.gameNumber > 1) ? 
     'Game ' + game.gameNumber :
     startTime;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
+import { format } from 'date-fns';
 import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers, selectGameStatus } from '../features/games';
 
 const formatPitcherName = (pitcher) => {
@@ -39,9 +39,7 @@ function PreviewGame() {
   const venue = useSelector(selectVenue);
   const away = formatTeam(teams, probables, boxscore, 'away');
   const home = formatTeam(teams, probables, boxscore, 'home');
-  const formattedStart = status.startTimeTBD ? 
-    'Start time TBD' : 
-    moment(startTime).format('LLL');
+  const formattedStart = status.startTimeTBD ? 'Start time TBD' : format(new Date(startTime), 'MMMM d, yyy p');
   return (
     <element>
       <element height='60%'>
