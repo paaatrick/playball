@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
 import jsonpatch from 'json-patch';
-import logger from '../logger';
 
 const initialState = {
   loading: false,
@@ -16,7 +15,6 @@ export const fetchGame = createAsyncThunk(
   async ({id, start}) => {
     const diffParams = start ? `/diffPatch?startTimecode=${start}` : '';
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
-    logger.info(url);
     const response = await axios.get(url);
     return response.data;
   }
