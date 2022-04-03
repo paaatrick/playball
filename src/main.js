@@ -4,7 +4,7 @@ import { render } from 'react-blessed';
 import { Provider } from 'react-redux';
 
 import store from './store';
-import './logger';
+import log from './logger';
 
 import App from './components/App';
 
@@ -21,7 +21,7 @@ screen.key(['escape', 'q', 'C-c'], () => {
 });
 
 process.on('uncaughtException', function(error) {
-  console.log(error)
+  log.error(error)
 });
 
 render(

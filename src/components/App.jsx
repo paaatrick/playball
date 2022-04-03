@@ -28,7 +28,6 @@ function App({ onKeyPress }) {
 }
 
 App.propTypes = {
-  debug: PropTypes.func,
   onKeyPress: PropTypes.func,
 };
 
