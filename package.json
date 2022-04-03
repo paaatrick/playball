@@ -37,7 +37,6 @@
     "@reduxjs/toolkit": "^1.8.0",
     "axios": "^0.19.2",
     "blessed": "^0.1.81",
-    "immutable": "^3.8.2",
     "json-patch": "^0.7.0",
     "moment": "^2.24.0",
     "prop-types": "^15.6.2",
@@ -47,9 +46,6 @@
     "react-devtools-core": "^4.24.2",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
-    "redux-actions": "^2.6.1",
-    "redux-thunk": "^2.3.0",
-    "reselect": "^3.0.1",
     "winston": "^3.3.3",
     "ws": "^6.2.1"
   },
