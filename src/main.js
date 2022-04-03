@@ -2,11 +2,14 @@ import React from 'react';
 import blessed from 'blessed';
 import { render } from 'react-blessed';
 import { Provider } from 'react-redux';
+import raf from 'raf';
 
 import store from './store';
 import log from './logger';
 
 import App from './components/App';
+
+raf.polyfill();
 
 const screen = blessed.screen({
   autoPadding: true,
