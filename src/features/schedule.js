@@ -7,12 +7,10 @@ const initialState = {
   data: null,
 };
 
-const date = new Date().toLocaleDateString();
-
 export const fetchSchedule = createAsyncThunk(
   'schedule/fetch',
-  async () => {
-    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team,linescore&startDate=${date}&endDate=${date}`);
+  async (date) => {
+    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team,linescore&startDate=${date.toLocaleDateString()}&endDate=${date.toLocaleDateString()}`);
     return response.data;
   }
 );

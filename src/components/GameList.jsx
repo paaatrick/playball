@@ -1,74 +1,98 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import { add, format } from 'date-fns';
 import { fetchSchedule, selectData, selectLoading } from '../features/schedule'
 
+import screen from '../screen';
 import style from '../style';
+import Grid from './Grid';
 
 const formatGame = game => {
   const startTime = format(new Date(game.gameDate), 'p');
   const start = (game.doubleHeader === 'Y' && game.gameNumber > 1) ? 
     'Game ' + game.gameNumber :
     startTime;
-  const teamName = (team) => `${team.team.teamName} (${team.leagueRecord.wins}-${team.leagueRecord.losses})`;
-  let content = `${start.padStart(8)}  ${teamName(game.teams.away)} at ${teamName(game.teams.home)}`;
+  const teamName = (team) => `${team.team.teamName} (${team.leagueRecord.wins}-${team.leagueRecord.losses})`.padEnd(20);
+  let content = [start, teamName(game.teams.away), teamName(game.teams.home)];
   const gameState = game.status.abstractGameCode;
   const detailedState = game.status.detailedState;
   switch (gameState) {
   case 'P':
     break;
   case 'L':
+    content[0] = game.linescore.inningState + ' ' + game.linescore.currentInningOrdinal;
     if (detailedState !== 'In Progress') {
-      content += ' | ' + detailedState;
+      content[0] += ' | ' + detailedState;
     }
     if (game.linescore) {
-      content += ' | ' + 
-        game.linescore.inningState + ' ' + game.linescore.currentInningOrdinal + ' | ' +
-        game.teams.away.team.abbreviation + ' ' + game.linescore.teams.away.runs + ' - ' + 
-        game.teams.home.team.abbreviation + ' ' + game.linescore.teams.home.runs;
+        content[0] = content[0].padEnd(20) + ' H  R  E';
+        content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
+          game.linescore.teams.away.hits.toString().padStart(3) + 
+          game.linescore.teams.away.errors.toString().padStart(3);
+        content[2] += game.linescore.teams.home.runs.toString().padStart(2) + 
+          game.linescore.teams.home.hits.toString().padStart(3) + 
+          game.linescore.teams.home.errors.toString().padStart(3);
     }
     break;
   case 'F':
-    content += ' | ' + detailedState;
+    content[0] = detailedState;
     if (game.status.reason) {
-      content += ' | ' + game.status.reason;
+      content[0] += ' | ' + game.status.reason;
     }
     if (game.linescore) {
-      content += ' | ' +
-        game.teams.away.team.abbreviation + ' ' + game.linescore.teams.away.runs + ' - ' + 
-        game.teams.home.team.abbreviation + ' ' + game.linescore.teams.home.runs;
+      content[0] = content[0].padEnd(20) + ' H  R  E';
+      content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
+        game.linescore.teams.away.hits.toString().padStart(3) + 
+        game.linescore.teams.away.errors.toString().padStart(3);
+      content[2] += game.linescore.teams.home.runs.toString().padStart(2) + 
+        game.linescore.teams.home.hits.toString().padStart(3) + 
+        game.linescore.teams.home.errors.toString().padStart(3);
     }
     break;
   }
-  return content;
+  return content.map(s => ' ' + s).join('\n');
 };
 
 function GameList({ onGameSelect }) {
   const dispatch = useDispatch()
   const schedule = useSelector(selectData)
   const loading = useSelector(selectLoading)
+  const timerRef = useRef(null)
+  const [date, setDate] = useState(new Date())
 
   useEffect(() => {
-    dispatch(fetchSchedule())
+    dispatch(fetchSchedule(date))
+    timerRef.current = setInterval(() => dispatch(fetchSchedule(date)), 30000)
+    return () => clearInterval(timerRef.current)
+  }, [date])
+
+  useEffect(() => {
+    const prevDay = () => setDate(prev => add(prev, { days: -1 }))
+    const nextDay = () => setDate(prev => add(prev, { days: 1 }))
+    screen.key('p', prevDay)
+    screen.key('n', nextDay)
+    return () => {
+      screen.unkey('p', prevDay)
+      screen.unkey('n', nextDay)
+    }
   }, [])
 
-  const handleGameSelect = (item, idx) => {
+  const handleGameSelect = (idx) => {
     const selected = schedule.dates[0].games[idx];
     onGameSelect(selected);
   }
 
   const messageStyle = {
-    left: 'center',
-    top: 'center',
-    height: '80%',
-    width: '80%',
-    border: {type: 'line'},
+    left: 0,
+    top: 0,
+    height: '100%',
+    width: '100%',
     align: 'center',
     valign: 'middle',
   };
 
-  if (loading) {
+  if (!schedule && loading) {
     return <box {...messageStyle} content='Loading...' />;
   }
 
@@ -77,21 +101,18 @@ function GameList({ onGameSelect }) {
   }
 
   return (
-    <list left='center'
-      top='center'
-      width='80%'
-      height='80%'
-      keys
-      vi
-      focused
-      border={{type: 'line'}}
-      label=' Select a game '
-      scrollbar={style.scrollbar}
-      style={style.list}
-      items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
-      onSelect={handleGameSelect}
-    />
-  );
+    <element>
+      <box top={0} left={0} width='100%' height={1} align='center' valign='middle' style={{ bg: 'white', fg: 'black' }} content={format(date, 'PPPP')}></box>
+      <element top={2} left={0} width='100%' height='100%-2'>
+        <Grid 
+          items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
+          itemHeight={5}
+          itemMinWidth={34}
+          onSelect={handleGameSelect}
+        />
+      </element>
+    </element>
+  )
 }
 
 GameList.propTypes = {
