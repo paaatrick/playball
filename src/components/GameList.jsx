@@ -105,6 +105,10 @@ function GameList({ onGameSelect }) {
   const loading = useSelector(selectLoading)
   const timerRef = useRef(null)
   const [date, setDate] = useState(new Date())
+  let games = []
+  if (schedule && schedule.dates.length > 0) {
+    games = schedule.dates[0].games.slice().sort(compareGames)
+  }
 
   useEffect(() => {
     dispatch(fetchSchedule(date))
@@ -117,7 +121,7 @@ function GameList({ onGameSelect }) {
   useKey('t', useCallback(() => setDate(new Date()), []), { key: 'T', label: 'Today' })
 
   const handleGameSelect = (idx) => {
-    const selected = schedule.dates[0].games[idx];
+    const selected = games[idx];
     onGameSelect(selected);
   }
 
@@ -135,10 +139,10 @@ function GameList({ onGameSelect }) {
       <box top={0} left={0} width='100%' height={1} align='center' valign='middle' style={{ bg: 'white', fg: 'black' }} content={format(date, 'PPPP')}></box>
       <element top={2} left={0} width='100%' height='100%-2'>
         {(!schedule && loading) && <box {...messageStyle} content='Loading...' />}
-        {(schedule && schedule.dates.length === 0) && <box {...messageStyle} content='No games today' />}
-        {(schedule && schedule.dates.length > 0) && (
+        {(schedule && games.length === 0) && <box {...messageStyle} content='No games today' />}
+        {(schedule && games.length > 0) && (
           <Grid 
-            items={schedule.dates[0].games.slice().sort(compareGames).map(formatGame)}
+            items={games.map(formatGame)}
             itemHeight={5}
             itemMinWidth={34}
             onSelect={handleGameSelect}
