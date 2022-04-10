@@ -76,7 +76,7 @@ function compareGameState(a, b) {
 }
 
 function compareGameInnings(a, b) {
-  const inningCompare = a.linescore.currentInning - b.linescore.currentInning;
+  const inningCompare = b.linescore.currentInning - a.linescore.currentInning;
   if (inningCompare !== 0) {
     return inningCompare
   }
