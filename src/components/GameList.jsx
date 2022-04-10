@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { add, format } from 'date-fns';
 import { fetchSchedule, selectData, selectLoading } from '../features/schedule'
 
-import screen from '../screen';
-import style from '../style';
 import Grid from './Grid';
 import useKey from '../hooks/useKey';
 
@@ -46,6 +44,9 @@ const formatGame = game => {
       content[0] += ' | ' + game.status.reason;
     }
     if (game.linescore) {
+      if (game.linescore.currentInning !== game.scheduledInnings) {
+        content[0] += '/' + game.linescore.currentInning;
+      }
       content[0] = content[0].padEnd(20) + ' H  R  E';
       content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
         game.linescore.teams.away.hits.toString().padStart(3) + 
@@ -90,24 +91,20 @@ function GameList({ onGameSelect }) {
     valign: 'middle',
   };
 
-  if (!schedule && loading) {
-    return <box {...messageStyle} content='Loading...' />;
-  }
-
-  if (schedule && !schedule.dates.length) {
-    return <box {...messageStyle} content='No games today' />;
-  }
-
   return (
     <element>
       <box top={0} left={0} width='100%' height={1} align='center' valign='middle' style={{ bg: 'white', fg: 'black' }} content={format(date, 'PPPP')}></box>
       <element top={2} left={0} width='100%' height='100%-2'>
-        <Grid 
-          items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
-          itemHeight={5}
-          itemMinWidth={34}
-          onSelect={handleGameSelect}
-        />
+        {(!schedule && loading) && <box {...messageStyle} content='Loading...' />}
+        {(schedule && schedule.dates.length === 0) && <box {...messageStyle} content='No games today' />}
+        {(schedule && schedule.dates.length > 0) && (
+          <Grid 
+            items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
+            itemHeight={5}
+            itemMinWidth={34}
+            onSelect={handleGameSelect}
+          />
+        )}
       </element>
     </element>
   )
