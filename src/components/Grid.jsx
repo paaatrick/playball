@@ -64,9 +64,9 @@ function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
                     {...p} 
                     border={{type: selectedIndex === idx ? 'line' : 'bg'}}
                     key={items[idx]}
-                >
-                    {items[idx]}
-                </box>
+                    tags
+                    content={items[idx]}
+                />
             ))}
         </box>
     )

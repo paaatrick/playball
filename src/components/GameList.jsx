@@ -54,6 +54,12 @@ const formatGame = game => {
       content[2] += game.linescore.teams.home.runs.toString().padStart(2) + 
         game.linescore.teams.home.hits.toString().padStart(3) + 
         game.linescore.teams.home.errors.toString().padStart(3);
+      if (game.teams.away.isWinner) {
+        content[1] = `{bold}${content[1]}{/bold}`;
+      }
+      if (game.teams.home.isWinner) {
+        content[2] = `{bold}${content[2]}{/bold}`;
+      }
     }
     break;
   }
