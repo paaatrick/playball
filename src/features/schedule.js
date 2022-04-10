@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
+import { format } from 'date-fns';
 
 const initialState = {
   loading: false,
@@ -10,7 +11,8 @@ const initialState = {
 export const fetchSchedule = createAsyncThunk(
   'schedule/fetch',
   async (date) => {
-    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team,linescore&startDate=${date.toLocaleDateString()}&endDate=${date.toLocaleDateString()}`);
+    const dateStr = format(date, 'MM/dd/yyyy')
+    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team,linescore&date=${dateStr}`);
     return response.data;
   }
 );
