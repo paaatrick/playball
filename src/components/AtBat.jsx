@@ -30,6 +30,6 @@ function AtBat() {
   return (
     <box content={content} tags />
   );
-};
+}
 
 export default AtBat;

@@ -13,7 +13,7 @@
     "build": "npm run lint && npm run clean && npm run compile",
     "clean": "rimraf ./dist",
     "compile": "babel src --out-dir dist",
-    "lint": "eslint src",
+    "lint": "eslint --ext .jsx,.js src",
     "start": "babel-node ./src/main.js",
     "prepublishOnly": "npm run build",
     "react-devtools": "react-devtools"

@@ -8,13 +8,13 @@ import LiveGame from './LiveGame';
 import FinishedGame from './FinishedGame';
 
 function Game() {
-  const dispatch = useDispatch()
-  const game = useSelector(selectGame)
-  const fullUpdateRequired = useSelector(selectFullUpdateRequired)
-  const id = useSelector(selectSelectedId)
-  const timerRef = useRef(null)
-  const timestampRef = useRef()
-  timestampRef.current = fullUpdateRequired ? null : game?.metaData?.timeStamp
+  const dispatch = useDispatch();
+  const game = useSelector(selectGame);
+  const fullUpdateRequired = useSelector(selectFullUpdateRequired);
+  const id = useSelector(selectSelectedId);
+  const timerRef = useRef(null);
+  const timestampRef = useRef();
+  timestampRef.current = fullUpdateRequired ? null : game?.metaData?.timeStamp;
 
   const updateGameData = () => {
     dispatch(fetchGame({id, start: timestampRef.current}))
@@ -23,14 +23,14 @@ function Game() {
         const wait = ((result && result.metaData?.wait) || 10) * 1000;
         timerRef.current = setTimeout(updateGameData, wait);
       });
-  }
+  };
 
   useEffect(() => {
-    updateGameData()
+    updateGameData();
     return () => {
-      clearTimeout(timerRef.current)
-    }
-  }, [id])
+      clearTimeout(timerRef.current);
+    };
+  }, [id]);
 
   if (!game) { 
     return <element />;
@@ -38,15 +38,15 @@ function Game() {
 
   let Wrapped = null;
   switch (game.gameData?.status?.abstractGameCode) {
-    case 'P':
-      Wrapped = PreviewGame;
-      break;
-    case 'L':
-      Wrapped = LiveGame;
-      break;
-    case 'F':
-      Wrapped = FinishedGame;
-      break;
+  case 'P':
+    Wrapped = PreviewGame;
+    break;
+  case 'L':
+    Wrapped = LiveGame;
+    break;
+  case 'F':
+    Wrapped = FinishedGame;
+    break;
   }
 
   return (

@@ -13,7 +13,7 @@ function Bases({align}) {
   return (
     <box align={align} content={content} tags />
   );
-};
+}
 
 Bases.propTypes = {
   align: PropTypes.oneOf(['left', 'center', 'right']),

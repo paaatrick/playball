@@ -15,7 +15,7 @@ function Count({align}) {
   return (
     <box align={align} content={content} tags />
   );
-};
+}
 
 Count.propTypes = {
   align: PropTypes.oneOf(['left', 'center', 'right']),

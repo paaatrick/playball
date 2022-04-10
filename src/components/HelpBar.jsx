@@ -4,7 +4,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 const HelpBar = () => {
   const keys = useSelector(state => state.keys);
-  const content = keys.map(({ key, label }) => `{inverse}${key}{/inverse}:${label}`).join('  ')
+  const content = keys.map(({ key, label }) => `{inverse}${key}{/inverse}:${label}`).join('  ');
   return (
     <element>
       <LoadingSpinner />
@@ -13,7 +13,7 @@ const HelpBar = () => {
         tags 
       />
     </element>
-  )
+  );
 };
 
 export default HelpBar;

@@ -24,8 +24,8 @@ const getTeamLine = (linescore, totalInnings, homeAway, final) => (
 );
 
 function LineScore({ align, final }) {
-  const linescore = useSelector(selectLineScore)
-  const teams = useSelector(selectTeams)
+  const linescore = useSelector(selectLineScore);
+  const teams = useSelector(selectTeams);
 
   const currentInning = linescore.currentInning;
   if (!currentInning) {

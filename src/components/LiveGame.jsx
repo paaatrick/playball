@@ -38,6 +38,6 @@ function LiveGame()  {
       </element>
     </element>
   );
-};
+}
 
 export default LiveGame;

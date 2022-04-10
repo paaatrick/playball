@@ -48,11 +48,11 @@ const formatScore = (status, linescore) => {
 };
 
 function FinishedGame() {
-  const boxscore = useSelector(selectBoxscore)
-  const decisions = useSelector(selectDecisions)
-  const linescore = useSelector(selectLineScore)
-  const status = useSelector(selectGameStatus)
-  const teams = useSelector(selectTeams)
+  const boxscore = useSelector(selectBoxscore);
+  const decisions = useSelector(selectDecisions);
+  const linescore = useSelector(selectLineScore);
+  const status = useSelector(selectGameStatus);
+  const teams = useSelector(selectTeams);
 
   const awayTeam = `${teams.away.teamName}\n(${teams.away.record.wins}-${teams.away.record.losses})`;
   const homeTeam = `${teams.home.teamName}\n(${teams.home.record.wins}-${teams.home.record.losses})`;
@@ -71,6 +71,6 @@ function FinishedGame() {
       </element>
     </element>
   );
-};
+}
 
 export default FinishedGame;

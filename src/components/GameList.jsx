@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { add, format } from 'date-fns';
-import { fetchSchedule, selectData, selectLoading } from '../features/schedule'
+import { fetchSchedule, selectData, selectLoading } from '../features/schedule';
 
 import Grid from './Grid';
 import useKey from '../hooks/useKey';
@@ -21,7 +21,7 @@ const formatGame = game => {
     break;
   case 'L':
     if (detailedState === 'Warmup') {
-      content[0] = detailedState
+      content[0] = detailedState;
     } else {
       content[0] = game.linescore.inningState + ' ' + game.linescore.currentInningOrdinal;
       if (detailedState !== 'In Progress') {
@@ -29,11 +29,11 @@ const formatGame = game => {
       }
     }
     if (game.linescore) {
-        content[0] = content[0].padEnd(20) + ' H  R  E';
-        content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
+      content[0] = content[0].padEnd(20) + ' H  R  E';
+      content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
           game.linescore.teams.away.hits.toString().padStart(3) + 
           game.linescore.teams.away.errors.toString().padStart(3);
-        content[2] += game.linescore.teams.home.runs.toString().padStart(2) + 
+      content[2] += game.linescore.teams.home.runs.toString().padStart(2) + 
           game.linescore.teams.home.hits.toString().padStart(3) + 
           game.linescore.teams.home.errors.toString().padStart(3);
     }
@@ -70,7 +70,7 @@ const GAME_STATE_ORDER = {
   L: 0,
   P: 1,
   F: 2,
-}
+};
 function compareGameState(a, b) {
   return GAME_STATE_ORDER[a.status.abstractGameCode] - GAME_STATE_ORDER[b.status.abstractGameCode];
 }
@@ -78,27 +78,27 @@ function compareGameState(a, b) {
 function compareGameInnings(a, b) {
   const inningCompare = b.linescore.currentInning - a.linescore.currentInning;
   if (inningCompare !== 0) {
-    return inningCompare
+    return inningCompare;
   }
   if (a.isTopInning && !b.isTopInning) {
-    return -1
+    return -1;
   }
   if (b.isTopInning && !a.isTopInning) {
-    return 1
+    return 1;
   }
-  return 0
+  return 0;
 }
 
 function compareGames(a, b) {
-  const stateCompare = compareGameState(a, b)
+  const stateCompare = compareGameState(a, b);
   if (stateCompare !== 0) {
-    return stateCompare
+    return stateCompare;
   }
 
   if (a.status.abstractGameCode === 'L') {
     const inningCompare = compareGameInnings(a, b);
     if (inningCompare !== 0) {
-      return inningCompare
+      return inningCompare;
     }
   }
 
@@ -106,30 +106,30 @@ function compareGames(a, b) {
 }
 
 function GameList({ onGameSelect }) {
-  const dispatch = useDispatch()
-  const schedule = useSelector(selectData)
-  const loading = useSelector(selectLoading)
-  const timerRef = useRef(null)
-  const [date, setDate] = useState(new Date())
-  let games = []
+  const dispatch = useDispatch();
+  const schedule = useSelector(selectData);
+  const loading = useSelector(selectLoading);
+  const timerRef = useRef(null);
+  const [date, setDate] = useState(new Date());
+  let games = [];
   if (schedule && schedule.dates.length > 0) {
-    games = schedule.dates[0].games.slice().sort(compareGames)
+    games = schedule.dates[0].games.slice().sort(compareGames);
   }
 
   useEffect(() => {
-    dispatch(fetchSchedule(date))
-    timerRef.current = setInterval(() => dispatch(fetchSchedule(date)), 30000)
-    return () => clearInterval(timerRef.current)
-  }, [date])
+    dispatch(fetchSchedule(date));
+    timerRef.current = setInterval(() => dispatch(fetchSchedule(date)), 30000);
+    return () => clearInterval(timerRef.current);
+  }, [date]);
 
-  useKey('p', useCallback(() => setDate(prev => add(prev, { days: -1 })), []), { key: 'P', label: 'Prev Day' })
-  useKey('n', useCallback(() => setDate(prev => add(prev, { days: 1 })), []), { key: 'N', label: 'Next Day' })
-  useKey('t', useCallback(() => setDate(new Date()), []), { key: 'T', label: 'Today' })
+  useKey('p', useCallback(() => setDate(prev => add(prev, { days: -1 })), []), { key: 'P', label: 'Prev Day' });
+  useKey('n', useCallback(() => setDate(prev => add(prev, { days: 1 })), []), { key: 'N', label: 'Next Day' });
+  useKey('t', useCallback(() => setDate(new Date()), []), { key: 'T', label: 'Today' });
 
   const handleGameSelect = (idx) => {
     const selected = games[idx];
     onGameSelect(selected);
-  }
+  };
 
   const messageStyle = {
     left: 0,
@@ -156,7 +156,7 @@ function GameList({ onGameSelect }) {
         )}
       </element>
     </element>
-  )
+  );
 }
 
 GameList.propTypes = {

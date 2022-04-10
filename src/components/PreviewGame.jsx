@@ -49,6 +49,6 @@ function PreviewGame() {
       </element>
     </element>
   );
-};
+}
 
 export default PreviewGame;

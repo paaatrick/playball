@@ -36,6 +36,6 @@ function Matchup() {
   return (
     <box tags content={display} wrap={false} />
   );
-};
+}
 
 export default Matchup;
