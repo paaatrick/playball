@@ -7,6 +7,8 @@ import PreviewGame from './PreviewGame';
 import LiveGame from './LiveGame';
 import FinishedGame from './FinishedGame';
 
+import log from '../logger';
+
 function Game() {
   const dispatch = useDispatch();
   const game = useSelector(selectGame);
@@ -22,7 +24,8 @@ function Game() {
       .then((result) => {
         const wait = ((result && result.metaData?.wait) || 10) * 1000;
         timerRef.current = setTimeout(updateGameData, wait);
-      });
+      })
+      .catch(err => log.error('UPDATE_GAME_DATA:\n' + JSON.stringify(err) + '\n' + err.stack));
   };
 
   useEffect(() => {
