@@ -60,6 +60,45 @@ const formatGame = game => {
   return content.map(s => ' ' + s).join('\n');
 };
 
+const GAME_STATE_ORDER = {
+  L: 0,
+  P: 1,
+  F: 2,
+}
+function compareGameState(a, b) {
+  return GAME_STATE_ORDER[a.status.abstractGameCode] - GAME_STATE_ORDER[b.status.abstractGameCode];
+}
+
+function compareGameInnings(a, b) {
+  const inningCompare = a.linescore.currentInning - b.linescore.currentInning;
+  if (inningCompare !== 0) {
+    return inningCompare
+  }
+  if (a.isTopInning && !b.isTopInning) {
+    return -1
+  }
+  if (b.isTopInning && !a.isTopInning) {
+    return 1
+  }
+  return 0
+}
+
+function compareGames(a, b) {
+  const stateCompare = compareGameState(a, b)
+  if (stateCompare !== 0) {
+    return stateCompare
+  }
+
+  if (a.status.abstractGameCode === 'L') {
+    const inningCompare = compareGameInnings(a, b);
+    if (inningCompare !== 0) {
+      return inningCompare
+    }
+  }
+
+  return 0;
+}
+
 function GameList({ onGameSelect }) {
   const dispatch = useDispatch()
   const schedule = useSelector(selectData)
@@ -99,7 +138,7 @@ function GameList({ onGameSelect }) {
         {(schedule && schedule.dates.length === 0) && <box {...messageStyle} content='No games today' />}
         {(schedule && schedule.dates.length > 0) && (
           <Grid 
-            items={schedule && schedule.dates.length > 0 ? schedule.dates[0].games.map(formatGame) : []}
+            items={schedule.dates[0].games.slice().sort(compareGames).map(formatGame)}
             itemHeight={5}
             itemMinWidth={34}
             onSelect={handleGameSelect}
