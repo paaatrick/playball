@@ -16,10 +16,7 @@ process.on('uncaughtException', function(error) {
 
 render(
   <Provider store={store}>
-    <App 
-      debug={(message) => screen.debug(message)}
-      onKeyPress={(keys, handler) => screen.key(keys, handler)}
-    />
+    <App />
   </Provider>, 
   screen
 );

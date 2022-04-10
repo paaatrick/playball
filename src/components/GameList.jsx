@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { add, format } from 'date-fns';
@@ -7,6 +7,7 @@ import { fetchSchedule, selectData, selectLoading } from '../features/schedule'
 import screen from '../screen';
 import style from '../style';
 import Grid from './Grid';
+import useKey from '../hooks/useKey';
 
 const formatGame = game => {
   const startTime = format(new Date(game.gameDate), 'p');
@@ -21,9 +22,13 @@ const formatGame = game => {
   case 'P':
     break;
   case 'L':
-    content[0] = game.linescore.inningState + ' ' + game.linescore.currentInningOrdinal;
-    if (detailedState !== 'In Progress') {
-      content[0] += ' | ' + detailedState;
+    if (detailedState === 'Warmup') {
+      content[0] = detailedState
+    } else {
+      content[0] = game.linescore.inningState + ' ' + game.linescore.currentInningOrdinal;
+      if (detailedState !== 'In Progress') {
+        content[0] += ' | ' + detailedState;
+      }
     }
     if (game.linescore) {
         content[0] = content[0].padEnd(20) + ' H  R  E';
@@ -67,16 +72,9 @@ function GameList({ onGameSelect }) {
     return () => clearInterval(timerRef.current)
   }, [date])
 
-  useEffect(() => {
-    const prevDay = () => setDate(prev => add(prev, { days: -1 }))
-    const nextDay = () => setDate(prev => add(prev, { days: 1 }))
-    screen.key('p', prevDay)
-    screen.key('n', nextDay)
-    return () => {
-      screen.unkey('p', prevDay)
-      screen.unkey('n', nextDay)
-    }
-  }, [])
+  useKey('p', useCallback(() => setDate(prev => add(prev, { days: -1 })), []), { key: 'P', label: 'Prev Day' })
+  useKey('n', useCallback(() => setDate(prev => add(prev, { days: 1 })), []), { key: 'N', label: 'Next Day' })
+  useKey('t', useCallback(() => setDate(new Date()), []), { key: 'T', label: 'Today' })
 
   const handleGameSelect = (idx) => {
     const selected = schedule.dates[0].games[idx];

@@ -9,8 +9,6 @@ const screen = blessed.screen({
     handleUncaughtExceptions: false,
 });
 
-screen.key(['escape', 'q', 'C-c'], () => {
-    return process.exit(0);
-});
+screen.key(['escape', 'q', 'C-c'], () => process.exit(0));
 
 export default screen;

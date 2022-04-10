@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import useKey from "../hooks/useKey";
 import log from '../logger';
 
 function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
@@ -27,43 +28,36 @@ function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
         }
     }
 
-    const handleKeypress = (_, evt) => {
-        if (evt.name === 'right' || evt.name === 'l') {
-            setSelectedIndex(prev => Math.min(prev + 1, items.length - 1))
-        } else if (evt.name === 'left' || evt.name === 'h') {
-            setSelectedIndex(prev => Math.max(prev - 1, 0))
-        } else if (evt.name === 'down' || evt.name === 'j') {
-            setSelectedIndex(prev => {
-                const next = prev + numCols
-                if (next < items.length) {
-                    return next
-                } else {
-                    return prev
-                }
-            })
-        } else if (evt.name === 'up' || evt.name === 'k') {
-            setSelectedIndex(prev => {
-                const next = prev - numCols
-                if (next >= 0) {
-                    return next
-                } else {
-                    return prev
-                }
-            })
-        } else if (evt.name === 'enter') {
-            onSelect(selectedIndex)
-        }
-    };
+    useKey(['right', 'l'], useCallback(() => setSelectedIndex(prev => Math.min(prev + 1, items.length - 1)), [items.length]));
+    useKey(['left', 'h'], useCallback(() => setSelectedIndex(prev => Math.max(prev - 1, 0)), []))
+    useKey(['down', 'j'], useCallback(() => {
+        setSelectedIndex(prev => {
+            const next = prev + numCols
+            if (next < items.length) {
+                return next
+            } else {
+                return prev
+            }
+        })
+    }, [numCols, items.length]))
+    useKey(['up', 'k'], useCallback(() => {
+        setSelectedIndex(prev => {
+            const next = prev - numCols
+            if (next >= 0) {
+                return next
+            } else {
+                return prev
+            }
+        })
+    }, [numCols]))
+    useKey('enter', () => onSelect(selectedIndex))
 
     return (
         <box 
             ref={containerRef} 
-            onKeypress={handleKeypress}
             onResize={updateSize} 
             width='100%' 
             height='100%'
-            keyable
-            focused
         >
             {pos.map((p, idx) => (
                 <box 

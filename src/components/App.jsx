@@ -1,19 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import GameList from './GameList';
 import HelpBar from './HelpBar';
 import { selectSelectedId, setSelectedId } from '../features/games';
 import Game from './Game';
+import useKey from '../hooks/useKey';
 
 
-function App({ onKeyPress }) {
+function App() {
   const dispatch = useDispatch()
   const selectedGameId = useSelector(selectSelectedId)
 
-  useEffect(() => {
-    onKeyPress(['l'], () => dispatch(setSelectedId(null)))
-  }, [])
+  useKey('c', () => dispatch(setSelectedId(null)), { key: 'C', label: 'Schedule' });
   
   return (
     <element>
@@ -26,9 +24,5 @@ function App({ onKeyPress }) {
     </element>
   );
 }
-
-App.propTypes = {
-  onKeyPress: PropTypes.func,
-};
 
 export default App;
