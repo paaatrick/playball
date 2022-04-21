@@ -6,12 +6,16 @@ import LineScore from './LineScore';
 import Matchup from './Matchup';
 import AtBat from './AtBat';
 import AllPlays from './AllPlays';
+import InningDisplay from './InningDisplay';
 
 function LiveGame()  {
   return (
     <element>
       <element top={0} left={1} width='100%-1' height={3}>
-        <element width='25%'>
+        <element left={0} width={2}>
+          <InningDisplay />
+        </element>
+        <element left={5} width='25%-5'>
           <Count />
         </element>
         <element left='25%+1' width='25%'>
