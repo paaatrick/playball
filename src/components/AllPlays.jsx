@@ -11,11 +11,15 @@ function getPlayResultColor(play) {
     return 'green';
   } else if (lastPlay.isStrike) {
     return 'red';
-  } else if (lastPlay.isInPlay && lastPlay.description.indexOf(', out') < 0) {
+  } else if (lastPlay.isInPlay && !play.about.hasOut) {
     return 'blue';
   } else {
     return 'white';
   }
+}
+
+function formatOut(out) {
+  return ` {bold}${out} out{/bold}`;
 }
 
 
@@ -46,7 +50,7 @@ function AllPlays() {
       const color = getPlayResultColor(play);
       let line = `{${color}-fg}[${play.result.event}]{/${color}-fg} ${play.result.description}`;
       if (play.about.hasOut) {
-        line += ` {bold}${play.count.outs} out{/bold}`;
+        line += formatOut(play.count.outs);
       }
       if (play.about.isScoringPlay) {
         line += formatScoreDetail(play.result);
@@ -54,15 +58,23 @@ function AllPlays() {
       lines.push(line);
     }
 
-    play.playEvents && play.playEvents.slice().reverse().forEach(event => {
+    play.playEvents && play.playEvents.slice().reverse().forEach((event, idx, events) => {
       if (event.type === 'action') {
         let line = '';
         if (event.details.event) {
           line += `[${event.details.event}] `;
         }
         line += event.details.description;
-        if (event.isScoringPlay) {
+        if (event.isScoringPlay || event.details.isScoringPlay) {
           line += formatScoreDetail(event.details);
+        }
+        const currentOut = event.count?.outs;
+        let prevOut = 0;
+        if (idx > 0) {
+          prevOut = events[idx - 1].count?.outs;
+        }
+        if (currentOut > prevOut) {
+          line += formatOut(currentOut);
         }
         lines.push(line);
       }
