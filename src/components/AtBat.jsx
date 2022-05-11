@@ -6,7 +6,7 @@ function AtBat() {
   const currentPlay = useSelector(selectCurrentPlay);
   const playEvents = currentPlay.playEvents;
   const playResult = currentPlay.about.isComplete ? currentPlay.result.description : '';
-  const content = playEvents && playEvents.map(event => {
+  const content = playEvents && playEvents.slice().reverse().map(event => {
     let line = '';
     if (event.isPitch) {
       line = `[${event.details.description}] `;
