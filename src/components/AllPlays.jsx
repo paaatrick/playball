@@ -36,7 +36,11 @@ function AllPlays() {
 
   let inning = '';
   const lines = [];
-  plays && plays.slice().reverse().forEach(play => {
+  plays && plays.slice().reverse().forEach((play, playIdx, plays) => {
+    let lastPlay;
+    if (playIdx > 0) {
+      lastPlay = plays[playIdx - 1];
+    }
     const playInning = play.about.halfInning + ' ' + play.about.inning;
     if (playInning !== inning) {
       inning = playInning;
@@ -58,7 +62,7 @@ function AllPlays() {
       lines.push(line);
     }
 
-    play.playEvents && play.playEvents.slice().reverse().forEach((event, idx, events) => {
+    play.playEvents && play.playEvents.slice().reverse().forEach((event, eventIdx, events) => {
       if (event.type === 'action') {
         let line = '';
         if (event.details.event) {
@@ -69,9 +73,9 @@ function AllPlays() {
           line += formatScoreDetail(event.details);
         }
         const currentOut = event.count?.outs;
-        let prevOut = 0;
-        if (idx > 0) {
-          prevOut = events[idx - 1].count?.outs;
+        let prevOut = lastPlay ? lastPlay.count.outs : 0;
+        if (eventIdx > 0) {
+          prevOut = events[eventIdx - 1].count?.outs;
         }
         if (currentOut > prevOut) {
           line += formatOut(currentOut);
