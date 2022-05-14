@@ -29,7 +29,7 @@ function Matchup() {
   const {team: batTeam, player: batter} = getPlayerStats(boxscore, teams, batterId);
 
   const display = `${pitchTeam.abbreviation} Pitching: ` + 
-    `{bold}${pitcher.person.fullName}{/bold} ${pitcher.stats.pitching.inningsPitched} IP, ${pitcher.stats.pitching.pitchesThrown} P, ${pitcher.seasonStats.pitching.era} ERA\n` +
+    `{bold}${pitcher.person.fullName}{/bold} ${pitcher.stats.pitching.inningsPitched} IP, ${pitcher.stats.pitching.pitchesThrown || 0} P, ${pitcher.seasonStats.pitching.era} ERA\n` +
     `${batTeam.abbreviation} At Bat:   ` + 
     `{bold}${batter.person.fullName}{/bold} ${batter.stats.batting.hits}-${batter.stats.batting.atBats}, ${batter.seasonStats.batting.avg} AVG, ${batter.seasonStats.batting.homeRuns} HR`;
 
