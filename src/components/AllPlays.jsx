@@ -38,8 +38,8 @@ function AllPlays() {
   const lines = [];
   plays && plays.slice().reverse().forEach((play, playIdx, plays) => {
     let lastPlay;
-    if (playIdx > 0) {
-      lastPlay = plays[playIdx - 1];
+    if (playIdx < plays.length - 1) {
+      lastPlay = plays[playIdx + 1];
     }
     const playInning = play.about.halfInning + ' ' + play.about.inning;
     if (playInning !== inning) {
@@ -54,7 +54,10 @@ function AllPlays() {
       const color = getPlayResultColor(play);
       let line = `{${color}-fg}[${play.result.event}]{/${color}-fg} ${play.result.description}`;
       if (play.about.hasOut) {
-        line += formatOut(play.count.outs);
+        const lastOut = play.playEvents[play.playEvents.length - 1].count.outs;
+        if (lastOut !== play.count.outs) {
+          line += formatOut(play.count.outs);
+        }
       }
       if (play.about.isScoringPlay) {
         line += formatScoreDetail(play.result);
@@ -74,8 +77,8 @@ function AllPlays() {
         }
         const currentOut = event.count?.outs;
         let prevOut = lastPlay ? lastPlay.count.outs : 0;
-        if (eventIdx > 0) {
-          prevOut = events[eventIdx - 1].count?.outs;
+        if (eventIdx < events.length - 1) {
+          prevOut = events[eventIdx + 1].count?.outs;
         }
         if (currentOut > prevOut) {
           line += formatOut(currentOut);
