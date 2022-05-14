@@ -8,7 +8,7 @@ export default {
   scrollbar: {
     ch: ' ',
     style: {
-      fg: 'yellow',
+      fg: 'white',
       inverse: true
     }
   }
