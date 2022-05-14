@@ -16,7 +16,7 @@ function formatHeaderRow(record) {
 
 function formatTeamRow(record) {
   const lastTen = record.records.splitRecords.find(o => o.type === 'lastTen');
-  return record.team.shortName.padEnd(15) + 
+  return record.team.teamName.padEnd(15) + 
     record.wins.toString().padStart(5) + 
     record.losses.toString().padStart(5) + 
     record.winningPercentage.padStart(7) + 
