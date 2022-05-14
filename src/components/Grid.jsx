@@ -66,6 +66,7 @@ function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
           key={items[idx]}
           tags
           content={items[idx]}
+          wrap={false}
         />
       ))}
     </box>
