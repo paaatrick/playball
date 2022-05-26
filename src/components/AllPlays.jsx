@@ -6,8 +6,10 @@ import style from '../style';
 
 
 function getPlayResultColor(play) {
-  const lastPlay = play.playEvents[play.playEvents.length - 1].details;
-  if (lastPlay.isBall) {
+  const lastPlay = play.playEvents[play.playEvents.length - 1]?.details;
+  if (!lastPlay) {
+    return 'white';
+  } else if (lastPlay.isBall) {
     return 'green';
   } else if (lastPlay.isStrike) {
     return 'red';
