@@ -28,6 +28,13 @@ function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
     }
   }
 
+  useEffect(() => {
+    const curr = pos[selectedIndex].top;
+    const total = pos[pos.length - 1].top;
+    const perc = Math.round(curr / total * 100);
+    containerRef.current.setScrollPerc(perc);
+  }, [pos, selectedIndex]);
+
   useKey(['right', 'l'], useCallback(() => setSelectedIndex(prev => Math.min(prev + 1, items.length - 1)), [items.length]));
   useKey(['left', 'h'], useCallback(() => setSelectedIndex(prev => Math.max(prev - 1, 0)), []));
   useKey(['down', 'j'], useCallback(() => {
@@ -58,6 +65,7 @@ function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
       onResize={updateSize} 
       width='100%' 
       height='100%'
+      scrollable={true}
     >
       {pos.map((p, idx) => (
         <box 
