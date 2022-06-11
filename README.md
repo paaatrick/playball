@@ -1,7 +1,7 @@
 ## Playball!
 Watch MLB games from the comfort of your own terminal
 
-![screenshot](https://i.imgur.com/SdA4fWR.gif)
+![screenshot](./demo.gif)
 
 ### Why?
 [MLB Gameday](http://www.mlb.com/mlb/gameday/#) and [MLB.tv](http://mlb.tv) are
@@ -25,12 +25,26 @@ $ playball
 ```
 
 ### Keys
+#### Global
 key | action
 ----|--------
 <kbd>q</kbd> | quit
-<kbd>&darr;</kbd> / <kbd>j</kbd>, <kbd>&uarr;</kbd> / <kbd>k</kbd> | change highlighted game in list; scroll list of plays in game
-<kbd>enter</kbd> | view highlighted game in list
-<kbd>l</kbd> | return to list of games
+<kbd>c</kbd> | go to schedule view
+<kbd>s</kbd> | go to standings view
+
+#### Schedule View
+key | action
+----|--------
+<kbd>&darr;</kbd>/<kbd>j</kbd>, <kbd>&uarr;</kbd>/<kbd>k</kbd>, <kbd>&larr;</kbd>/<kbd>h</kbd>, <kbd>&rarr;</kbd>/<kbd>l</kbd> | change highlighted game
+<kbd>enter</kbd> | view highlighted game
+<kbd>p</kbd> | show previous day's schedule/results
+<kbd>n</kbd> | show next day's schedule
+<kbd>t</kbd> | return to today's schedule
+
+#### Game View
+key | action
+----|--------
+<kbd>&darr;</kbd>/<kbd>j</kbd>, <kbd>&uarr;</kbd>/<kbd>k</kbd> | scroll list of all plays
 
 ### Development
 ```

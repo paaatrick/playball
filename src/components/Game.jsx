@@ -1,77 +1,60 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { selectGame, selectSelectedId, selectFullUpdateRequired } from '../selectors/game';
-import { fetchGame } from '../actions/game';
+import { fetchGame, selectGame, selectSelectedId, selectFullUpdateRequired } from '../features/games';
 
 import PreviewGame from './PreviewGame';
 import LiveGame from './LiveGame';
 import FinishedGame from './FinishedGame';
 
-class Game extends React.Component {
-  componentDidMount() {
-    this.updateGameData();
+import log from '../logger';
+
+function Game() {
+  const dispatch = useDispatch();
+  const game = useSelector(selectGame);
+  const fullUpdateRequired = useSelector(selectFullUpdateRequired);
+  const id = useSelector(selectSelectedId);
+  const timerRef = useRef(null);
+  const timestampRef = useRef();
+  timestampRef.current = fullUpdateRequired ? null : game?.metaData?.timeStamp;
+
+  const updateGameData = () => {
+    dispatch(fetchGame({id, start: timestampRef.current}))
+      .unwrap()
+      .then((result) => {
+        const wait = ((result && result.metaData?.wait) || 10) * 1000;
+        timerRef.current = setTimeout(updateGameData, wait);
+      })
+      .catch(err => log.error('UPDATE_GAME_DATA:\n' + JSON.stringify(err) + '\n' + err.stack));
+  };
+
+  useEffect(() => {
+    updateGameData();
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, [id]);
+
+  if (!game) { 
+    return <element />;
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.id !== prevProps.id) {
-      this.updateGameData();
-    }
+  let Wrapped = null;
+  switch (game.gameData?.status?.abstractGameCode) {
+  case 'P':
+    Wrapped = PreviewGame;
+    break;
+  case 'L':
+    Wrapped = LiveGame;
+    break;
+  case 'F':
+    Wrapped = FinishedGame;
+    break;
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.timer);
-  }
-
-  updateGameData() {
-    const { fetchGame, game, id, fullUpdateRequired } = this.props;
-    const start = fullUpdateRequired ? null : (game && game.getIn(['metaData', 'timeStamp']));
-    fetchGame(id, start)
-      .then(() => {
-        const wait = ((game && game.getIn(['metaData', 'wait'])) || 10) * 1000;
-        this.timer = setTimeout(this.updateGameData.bind(this), wait);
-      });    
-  }
-
-  render() {
-    const { game } = this.props;
-    if (!game || game.isEmpty()) { 
-      return <element />;
-    }
-    let Wrapped = null;
-    switch (game.getIn(['gameData', 'status', 'abstractGameCode'])) {
-    case 'P':
-      Wrapped = PreviewGame;
-      break;
-    case 'L':
-      Wrapped = LiveGame;
-      break;
-    case 'F':
-      Wrapped = FinishedGame;
-      break;
-    }
-    return (
-      <element><Wrapped /></element>
-    );
-  }
+  return (
+    <element><Wrapped /></element>
+  );
 }
 
-Game.propTypes = {
-  fetchGame: PropTypes.func,
-  game: PropTypes.object,
-  id: PropTypes.number,
-  fullUpdateRequired: PropTypes.bool,
-};
-
-const mapStateToProps = state => ({
-  game: selectGame(state),
-  fullUpdateRequired: selectFullUpdateRequired(state),
-  id: selectSelectedId(state),
-});
-
-const mapDispatchToProps = {
-  fetchGame
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Game);
+export default Game;

@@ -1,71 +1,43 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import GameList from './GameList';
-import Game from './Game';
 import HelpBar from './HelpBar';
-import fs from 'fs';
+import { setSelectedId } from '../features/games';
+import Game from './Game';
+import useKey from '../hooks/useKey';
+import Standings from './Standings';
 
-import { setSelectedGame } from '../actions/game';
-import { selectGame, selectSelectedId } from '../selectors/game';
+const SCHEDULE = 'schedule';
+const STANDINGS = 'standings';
+const GAME = 'game';
 
-import winston from 'winston';
+function App() {
+  const [view, setView] = useState(SCHEDULE);
+  const dispatch = useDispatch();
 
-class App extends React.Component {
-  componentDidMount() {
-    const { onKeyPress, setSelectedGame } = this.props;
-    onKeyPress(['l'], () => setSelectedGame(null));
-    onKeyPress(['C-d'], () => {
-      const { selectedGame, game } = this.props;
-      fs.writeFileSync(
-        selectedGame + '_' + Date.now() + '.json',
-        JSON.stringify(game, null, 2)
-      );
-    });
-  }
+  useKey('c', () => {
+    setView(SCHEDULE);
+    dispatch(setSelectedId(null));
+  }, { key: 'C', label: 'Schedule' });
+  useKey('s', () => setView(STANDINGS), { key: 'S', label: 'Standings'});
 
-  componentDidCatch(error, info) {
-    winston.error(error);
-    winston.error(JSON.stringify(info, null, 2));
-  }
+  const handleGameSelect = (game) => {
+    dispatch(setSelectedId(game.gamePk));
+    setView(GAME);
+  };
   
-  render() {
-    const { selectedGame, setSelectedGame } = this.props;
-    try {
-      return (
-        <element>
-          <element top={0} left={0} height='100%-1'>
-            {selectedGame ? 
-              <Game /> : 
-              <GameList onGameSelect={game => setSelectedGame(game.gamePk)} />
-            }
-          </element>
-          <element top='100%-1' left={0} height={1}>
-            <HelpBar />
-          </element>
-        </element>
-      );
-    } catch (error) {
-      this.props.debug(error);
-    }
-  }
+  return (
+    <element>
+      <element top={0} left={0} height='100%-1'>
+        {view === STANDINGS && <Standings />}
+        {view === SCHEDULE && <GameList onGameSelect={handleGameSelect} />}
+        {view === GAME && <Game />}
+      </element>
+      <element top='100%-1' left={0} height={1}>
+        <HelpBar />
+      </element>
+    </element>
+  );
 }
 
-App.propTypes = {
-  debug: PropTypes.func,
-  onKeyPress: PropTypes.func,
-  selectedGame: PropTypes.number,
-  setSelectedGame: PropTypes.func,
-  game: PropTypes.object,
-};
-
-const mapStateToProps = state => ({
-  selectedGame: selectSelectedId(state),
-  game: selectGame(state),
-});
-
-const mapDispatchToProps = {
-  setSelectedGame
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

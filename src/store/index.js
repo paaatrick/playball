@@ -1,9 +1,18 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { configureStore } from '@reduxjs/toolkit';
 
-import reducers from '../reducers';
+import schedule from '../features/schedule';
+import games from '../features/games';
+import keys from '../features/keys';
+import standings from '../features/standings';
 
-export default createStore(
-  reducers,
-  applyMiddleware(thunk)
-);
+export default configureStore({
+  reducer: {
+    schedule,
+    games,
+    keys,
+    standings,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  })
+});

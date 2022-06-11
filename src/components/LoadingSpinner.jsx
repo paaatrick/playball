@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { selectLoading as selectGameLoading } from '../selectors/game';
-import { selectLoading as selectScheduleLoading } from '../selectors/schedule';
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectLoading as selectScheduleLoading } from '../features/schedule';
+import { selectLoading as gamesLoading } from '../features/games';
 
 const frames = [
   '⠋',
@@ -17,67 +16,34 @@ const frames = [
   '⠏'
 ];
 
-class LoadingSpinner extends React.Component { 
-  constructor(props) {
-    super(props);
-    this.state = {
-      frame: 0,
-      animating: false,
-    };
-  }
+function LoadingSpinner() { 
+  const [frame, setFrame] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const timerRef = useRef(null);
+  const scheduleLoading = useSelector(selectScheduleLoading);
+  const gameLoading = useSelector(gamesLoading);
 
-  componentDidMount() {
-    this.doUpdate();
-  }
+  const increment = () => {
+    setFrame(prevFrame => (prevFrame + 1) % frames.length);
+  };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { gameLoading, scheduleLoading } = this.props;
-    const { frame } = this.state;
-    if (gameLoading !== prevProps.gameLoading || 
-        scheduleLoading !== prevProps.scheduleLoading ||
-        frame !== prevState.frame) {
-      this.doUpdate();
-    }
-  }
-
-  increment() {
-    this.setState(state => ({
-      frame: (state.frame + 1) % frames.length
-    }));
-  }
-
-  doUpdate() {
-    const { gameLoading, scheduleLoading } = this.props;
-    const { animating, frame } = this.state;
+  const doUpdate = () => {
     if (!animating && (gameLoading || scheduleLoading)) {
-      this.setState({
-        animating: true,
-      });
-      this.increment();
-      this.timer = setInterval(() => this.increment(), 50);
+      setAnimating(true);
+      increment();
+      timerRef.current = setInterval(increment, 50);
     }
     if (!gameLoading && !scheduleLoading && frame === 0) {
-      this.setState({
-        animating: false,
-      });
-      clearInterval(this.timer);
+      setAnimating(false);
+      clearInterval(timerRef.current);
     }
-  }
+  };
 
-  render() {
-    const { animating, frame } = this.state;
-    return <box content={animating ? frames[frame] : ' '} />;
-  }
+  useEffect(() => {
+    doUpdate();
+  }, [gameLoading, scheduleLoading, frame]);
+
+  return <box content={animating ? frames[frame] : ' '} />;
 }
 
-LoadingSpinner.propTypes = {
-  gameLoading: PropTypes.bool,
-  scheduleLoading: PropTypes.bool
-};
-
-const mapStateToProps = state => ({
-  gameLoading: selectGameLoading(state),
-  scheduleLoading: selectScheduleLoading(state),
-});
-
-export default connect(mapStateToProps)(LoadingSpinner);
+export default LoadingSpinner;

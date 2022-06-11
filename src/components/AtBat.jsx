@@ -1,43 +1,41 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { selectCurrentPlay } from '../selectors/game';
+import { useSelector } from 'react-redux';
+import { selectCurrentPlay } from '../features/games';
 
-const AtBat = ({currentPlay}) => {
-  const playEvents = currentPlay.get('playEvents');
-  const playResult = currentPlay.getIn(['about', 'isComplete']) ? 
-    currentPlay.getIn(['result', 'description']) : '';
-  const content = playEvents && playEvents.map(event => {
-    let line = '';
-    if (event.get('isPitch')) {
-      line = `[${event.getIn(['details', 'description'])}] `;
-      if (event.hasIn(['pitchData', 'startSpeed'])) {
-        line += `${event.getIn(['pitchData', 'startSpeed'])} MPH `;
+function AtBat() {
+  const currentPlay = useSelector(selectCurrentPlay);
+  const playEvents = currentPlay.playEvents;
+  const playResult = currentPlay.about.isComplete ? currentPlay.result.description : '';
+  let content = '';
+  if (playResult) {
+    content += `${playResult}\n\n`;
+  } 
+  if (playEvents && playEvents.length) {
+    content += playEvents.slice().reverse().map(event => {
+      let line = '';
+      if (event.isPitch) {
+        line = `[${event.details.description}] `;
+        if (event.pitchData?.startSpeed) {
+          line += `${event.pitchData.startSpeed} MPH `;
+        }
+        if (event.details?.type?.description) {
+          line += event.details.type.description;
+        }
+        if (!event.details?.isInPlay) {
+          line += `{|} ${event.count.balls}-${event.count.strikes}`;
+        }
+      } else {
+        if (event.details?.event) {
+          line += `[${event.details.event}] `;
+        }
+        line += event.details.description;
       }
-      line += event.getIn(['details', 'type', 'description']);
-      if (!event.getIn(['details', 'isInPlay'])) {
-        line += `{|} ${event.getIn(['count', 'balls'])}-${event.getIn(['count', 'strikes'])}`;
-      }
-    } else {
-      if (event.getIn(['details', 'event'])) {
-        line += `[${event.getIn(['details', 'event'])}] `;
-      }
-      line += event.getIn(['details', 'description']);
-    }
-    return line;
-  }).join('\n') + `\n\n${playResult}`;
+      return line;
+    }).join('\n');
+  }
   return (
     <box content={content} tags />
   );
-};
+}
 
-AtBat.propTypes = {
-  boxscore: PropTypes.object,
-  currentPlay: PropTypes.object,
-};
-
-const mapStateToProps = state => ({
-  currentPlay: selectCurrentPlay(state),
-});
-
-export default connect(mapStateToProps)(AtBat);
+export default AtBat;

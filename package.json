@@ -1,6 +1,6 @@
 {
   "name": "playball",
-  "version": "2.2.2",
+  "version": "3.0.0",
   "description": "Watch MLB games from the comfort of your terminal",
   "keywords": [
     "MLB",
@@ -13,9 +13,10 @@
     "build": "npm run lint && npm run clean && npm run compile",
     "clean": "rimraf ./dist",
     "compile": "babel src --out-dir dist",
-    "lint": "eslint src",
+    "lint": "eslint --ext .jsx,.js src",
     "start": "babel-node ./src/main.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "react-devtools": "react-devtools"
   },
   "main": "dist/main.js",
   "bin": {
@@ -33,37 +34,54 @@
   "preferGlobal": true,
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "@reduxjs/toolkit": "^1.8.0",
+    "axios": "^0.26.1",
     "blessed": "^0.1.81",
-    "immutable": "^3.8.2",
+    "date-fns": "^2.28.0",
     "json-patch": "^0.7.0",
-    "moment": "^2.24.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.8.6",
-    "react-blessed": "^0.5.0",
-    "react-devtools-core": "^3.6.1",
-    "react-redux": "^5.0.7",
-    "redux": "^4.0.0",
-    "redux-actions": "^2.6.1",
-    "redux-thunk": "^2.3.0",
-    "reselect": "^3.0.1",
-    "winston": "^3.3.3",
-    "ws": "^6.2.1"
+    "prop-types": "^15.8.1",
+    "raf": "^3.4.1",
+    "react": "^17.0.2",
+    "react-blessed": "^0.7.2",
+    "react-devtools-core": "^4.24.7",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.1",
-    "@babel/node": "^7.10.5",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/preset-react": "^7.10.4",
-    "eslint": "^7.6.0",
-    "eslint-plugin-react": "^7.20.5",
-    "rimraf": "^2.6.3"
+    "@babel/cli": "^7.17.10",
+    "@babel/core": "^7.18.2",
+    "@babel/node": "^7.17.10",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint": "^8.12.0",
+    "eslint-plugin-react": "^7.29.4",
+    "react-devtools": "^4.24.7",
+    "rimraf": "^2.6.3",
+    "ws": "^8.5.0"
   },
   "babel": {
     "presets": [
-      "@babel/preset-env",
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "10"
+          }
+        }
+      ],
       "@babel/preset-react"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "alias": {
+            "react-redux": "react-redux/lib/alternate-renderers"
+          }
+        }
+      ]
     ]
   }
 }

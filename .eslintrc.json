@@ -11,7 +11,7 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": 2018,
+        "ecmaVersion": 2020,
         "sourceType": "module"
     },
     "plugins": [
@@ -27,7 +27,7 @@
     "settings": {
       "react": {
         "pragma": "React",
-        "version": "16.5.0"
+        "version": "17.0.2"
       }
     }
 }

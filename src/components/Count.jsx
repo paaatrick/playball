@@ -1,29 +1,24 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { selectGame } from '../selectors/game';
+import { selectLineScore } from '../features/games';
 
 const formatCount = (count, total) => '● '.repeat(count) + '○ '.repeat(total - count);
 
-const Count = ({align, game}) => {
-  const linescore = game.getIn(['liveData', 'linescore']);
+function Count({align}) {
+  const linescore = useSelector(selectLineScore);
   const content = 
-    `B: {green-fg}${formatCount(linescore.get('balls'), 4)}{/green-fg}\n` + 
-    `S: {red-fg}${formatCount(linescore.get('strikes'), 3)}{/red-fg}\n` + 
-    `O: {red-fg}${formatCount(linescore.get('outs'), 3)}{/red-fg}`;
+    `B: {green-fg}${formatCount(linescore.balls, 4)}{/green-fg}\n` + 
+    `S: {red-fg}${formatCount(linescore.strikes, 3)}{/red-fg}\n` + 
+    `O: {red-fg}${formatCount(linescore.outs, 3)}{/red-fg}`;
   return (
     <box align={align} content={content} tags />
   );
-};
+}
 
 Count.propTypes = {
-  align: PropTypes.string, 
-  game: PropTypes.object,  
+  align: PropTypes.oneOf(['left', 'center', 'right']),
 };
 
-const mapStateToProps = state => ({
-  game: selectGame(state),
-});
-
-export default connect(mapStateToProps)(Count);
+export default Count;

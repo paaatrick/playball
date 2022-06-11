@@ -1,30 +1,23 @@
 import React from 'react';
-import blessed from 'blessed';
 import { render } from 'react-blessed';
 import { Provider } from 'react-redux';
+import raf from 'raf';
 
+import screen from './screen';
 import store from './store';
-import './logger';
+import log from './logger';
 
 import App from './components/App';
 
-const screen = blessed.screen({
-  autoPadding: true,
-  debug: true,
-  smartCSR: true,
-  title: 'Playball!'
-});
+raf.polyfill();
 
-screen.key(['escape', 'q', 'C-c'], () => {
-  return process.exit(0);
+process.on('uncaughtException', function(error) {
+  log.error('UNCAUGHT EXCEPTION\n' + JSON.stringify(error) + '\n' + error.stack);
 });
 
 render(
   <Provider store={store}>
-    <App 
-      debug={(message) => screen.debug(message)}
-      onKeyPress={(keys, handler) => screen.key(keys, handler)}
-    />
+    <App />
   </Provider>, 
   screen
 );
