@@ -1,7 +1,7 @@
 ## Playball!
 Watch MLB games from the comfort of your own terminal
 
-![screenshot](https://i.imgur.com/SdA4fWR.gif)
+![screenshot](./demo.gif)
 
 ### Why?
 [MLB Gameday](http://www.mlb.com/mlb/gameday/#) and [MLB.tv](http://mlb.tv) are
