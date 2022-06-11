@@ -29,7 +29,7 @@ const formatGame = game => {
       }
     }
     if (game.linescore) {
-      content[0] = content[0].padEnd(20) + ' H  R  E';
+      content[0] = content[0].padEnd(20) + ' R  H  E';
       content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
           game.linescore.teams.away.hits.toString().padStart(3) + 
           game.linescore.teams.away.errors.toString().padStart(3);
@@ -47,7 +47,7 @@ const formatGame = game => {
       if (game.linescore.currentInning !== game.scheduledInnings) {
         content[0] += '/' + game.linescore.currentInning;
       }
-      content[0] = content[0].padEnd(20) + ' H  R  E';
+      content[0] = content[0].padEnd(20) + ' R  H  E';
       content[1] += game.linescore.teams.away.runs.toString().padStart(2) + 
         game.linescore.teams.away.hits.toString().padStart(3) + 
         game.linescore.teams.away.errors.toString().padStart(3);
