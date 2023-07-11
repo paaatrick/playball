@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { add, format } from 'date-fns';
-import { fetchSchedule, selectData, selectLoading } from '../features/schedule';
+import { fetchSchedule, selectData, selectLoading } from '../features/schedule.js';
 
-import Grid from './Grid';
-import useKey from '../hooks/useKey';
+import Grid from './Grid.js';
+import useKey from '../hooks/useKey.js';
 
 const formatGame = game => {
   const startTime = format(new Date(game.gameDate), 'p');

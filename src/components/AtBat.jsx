@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentPlay } from '../features/games';
+import { selectCurrentPlay } from '../features/games.js';
 
 function AtBat() {
   const currentPlay = useSelector(selectCurrentPlay);

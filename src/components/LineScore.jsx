@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { selectLineScore, selectTeams } from '../features/games';
+import { selectLineScore, selectTeams } from '../features/games.js';
 
 const getRuns = (inning, homeAway, isFinal) => {
   const runs = inning[homeAway].runs;

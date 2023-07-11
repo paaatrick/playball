@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectAllPlays, selectTeams } from '../features/games';
+import { selectAllPlays, selectTeams } from '../features/games.js';
 
-import style from '../style';
+import style from '../style/index.js';
 
 
 function getPlayResultColor(play) {

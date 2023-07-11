@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectLoading as selectScheduleLoading } from '../features/schedule';
-import { selectLoading as gamesLoading } from '../features/games';
+import { selectLoading as selectScheduleLoading } from '../features/schedule.js';
+import { selectLoading as gamesLoading } from '../features/games.js';
 
 const frames = [
   '⠋',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentPlay, selectBoxscore, selectTeams } from '../features/games';
+import { selectCurrentPlay, selectBoxscore, selectTeams } from '../features/games.js';
 
 const getPlayerStats = (boxscore, teams, id) => {
   const key = 'ID' + id;

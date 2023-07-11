@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchStandings, selectData } from '../features/standings';
+import { fetchStandings, selectData } from '../features/standings.js';
 
 function formatHeaderRow(record) {
   return record.division.nameShort.padEnd(15) +

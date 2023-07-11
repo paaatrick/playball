@@ -3,11 +3,11 @@ import { render } from 'react-blessed';
 import { Provider } from 'react-redux';
 import raf from 'raf';
 
-import screen from './screen';
-import store from './store';
-import log from './logger';
+import screen from './screen.js';
+import store from './store/index.js';
+import log from './logger.js';
 
-import App from './components/App';
+import App from './components/App.js';
 
 raf.polyfill();
 

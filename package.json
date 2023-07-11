@@ -61,14 +61,16 @@
     "rimraf": "^2.6.3",
     "ws": "^8.5.0"
   },
+  "type": "module",
   "babel": {
     "presets": [
       [
         "@babel/preset-env",
         {
           "targets": {
-            "node": "10"
-          }
+            "node": "14"
+          },
+          "modules": false
         }
       ],
       "@babel/preset-react"
@@ -78,7 +80,7 @@
         "module-resolver",
         {
           "alias": {
-            "react-redux": "react-redux/lib/alternate-renderers"
+            "react-redux": "react-redux/lib/alternate-renderers.js"
           }
         }
       ]

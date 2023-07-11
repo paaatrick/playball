@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import GameList from './GameList';
-import HelpBar from './HelpBar';
-import { setSelectedId } from '../features/games';
-import Game from './Game';
-import useKey from '../hooks/useKey';
-import Standings from './Standings';
+import GameList from './GameList.js';
+import HelpBar from './HelpBar.js';
+import { setSelectedId } from '../features/games.js';
+import Game from './Game.js';
+import useKey from '../hooks/useKey.js';
+import Standings from './Standings.js';
 
 const SCHEDULE = 'schedule';
 const STANDINGS = 'standings';

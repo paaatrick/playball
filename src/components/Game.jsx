@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fetchGame, selectGame, selectSelectedId, selectFullUpdateRequired } from '../features/games';
+import { fetchGame, selectGame, selectSelectedId, selectFullUpdateRequired } from '../features/games.js';
 
-import PreviewGame from './PreviewGame';
-import LiveGame from './LiveGame';
-import FinishedGame from './FinishedGame';
+import PreviewGame from './PreviewGame.js';
+import LiveGame from './LiveGame.js';
+import FinishedGame from './FinishedGame.js';
 
-import log from '../logger';
+import log from '../logger.js';
 
 function Game() {
   const dispatch = useDispatch();

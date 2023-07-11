@@ -1,9 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
+import reduxjsToolkit from '@reduxjs/toolkit';
+const { configureStore } = reduxjsToolkit;
 
-import schedule from '../features/schedule';
-import games from '../features/games';
-import keys from '../features/keys';
-import standings from '../features/standings';
+import schedule from '../features/schedule.js';
+import games from '../features/games.js';
+import keys from '../features/keys.js';
+import standings from '../features/standings.js';
 
 export default configureStore({
   reducer: {
