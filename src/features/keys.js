@@ -13,7 +13,7 @@ export const keysSlice = createSlice({
         }
       },
       prepare: (key, listener, help) => {
-        screen.key(key, listener);
+        screen().key(key, listener);
         return { payload: help };
       }
     },
@@ -27,7 +27,7 @@ export const keysSlice = createSlice({
         }
       },
       prepare: (key, listener, help) => {
-        screen.unkey(key, listener);
+        screen().unkey(key, listener);
         return { payload: help };
       }
     }
