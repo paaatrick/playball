@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { add, format } from 'date-fns';
 import { fetchSchedule, selectData, selectLoading } from '../features/schedule.js';
-
+import { formatTeamName } from '../utils.js';
 import Grid from './Grid.js';
 import useKey from '../hooks/useKey.js';
 
@@ -12,7 +12,7 @@ const formatGame = game => {
   const start = (game.doubleHeader === 'Y' && game.gameNumber > 1) ? 
     'Game ' + game.gameNumber :
     startTime;
-  const teamName = (team) => `${team.team.teamName} (${team.leagueRecord.wins}-${team.leagueRecord.losses})`.padEnd(20);
+  const teamName = (team) => `${formatTeamName(team.team)} (${team.leagueRecord.wins}-${team.leagueRecord.losses})`.padEnd(20);
   let content = [start, teamName(game.teams.away), teamName(game.teams.home)];
   const gameState = game.status.abstractGameCode;
   const detailedState = game.status.detailedState;

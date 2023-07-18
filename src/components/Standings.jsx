@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchStandings, selectData } from '../features/standings.js';
+import { formatTeamName } from '../utils.js';
 
 function formatHeaderRow(record) {
   return record.division.nameShort.padEnd(15) +
@@ -16,7 +17,7 @@ function formatHeaderRow(record) {
 
 function formatTeamRow(record) {
   const lastTen = record.records.splitRecords.find(o => o.type === 'lastTen');
-  return record.team.teamName.padEnd(15) + 
+  return formatTeamName(record.team).padEnd(15) + 
     record.wins.toString().padStart(5) + 
     record.losses.toString().padStart(5) + 
     record.winningPercentage.padStart(7) + 
