@@ -101,7 +101,12 @@ const schema = {
         type: 'string',
         default: 'black',
         pattern: colorPattern,
-      }
+      },
+      'favorite-star': {
+        type: 'string',
+        default: 'yellow',
+        pattern: colorPattern,
+      },
     },
     default: {}
   }

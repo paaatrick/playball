@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchStandings, selectData } from '../features/standings.js';
-import { formatTeamName } from '../utils.js';
+import { teamFavoriteStar } from '../utils.js';
 
 function formatHeaderRow(record) {
   return record.division.nameShort.padEnd(15) +
@@ -17,7 +17,9 @@ function formatHeaderRow(record) {
 
 function formatTeamRow(record) {
   const lastTen = record.records.splitRecords.find(o => o.type === 'lastTen');
-  return formatTeamName(record.team).padEnd(15) + 
+  const star = teamFavoriteStar(record.team);
+  return star + 
+    record.team.teamName.padEnd(star ? 13 : 15) + 
     record.wins.toString().padStart(5) + 
     record.losses.toString().padStart(5) + 
     record.winningPercentage.padStart(7) + 
@@ -31,7 +33,7 @@ function Division({record, top, left, width}) {
   return (
     <box top={top} left={left} height={6} width={width}>
       <box top={0} left={0} height={1} fg='black' bg='white' content={formatHeaderRow(record)} wrap={false} />
-      <box top={1} left={0} height={5} content={record.teamRecords.map(formatTeamRow).join('\n')} wrap={false} />
+      <box top={1} left={0} height={5} content={record.teamRecords.map(formatTeamRow).join('\n')} wrap={false} tags />
     </box>
   );
 }
