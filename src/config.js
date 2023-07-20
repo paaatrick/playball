@@ -5,45 +5,6 @@ import Conf from 'conf';
 const colorPattern = '^(((light-|bright-)?(black|red|green|yellow|blue|magenta|cyan|white|grey))|default|#([0-9a-fA-F]{3}){1,2})$';
 
 const schema = {
-  'favorites': {
-    type: 'array',
-    items: {
-      type: 'string',
-      enum: [
-        'ATL',
-        'AZ',
-        'BAL',
-        'BOS',
-        'CHC',
-        'CIN',
-        'CLE',
-        'COL',
-        'CWS',
-        'DET',
-        'HOU',
-        'KC',
-        'LAA',
-        'LAD',
-        'MIA',
-        'MIL',
-        'MIN',
-        'NYM',
-        'NYY',
-        'OAK',
-        'PHI',
-        'PIT',
-        'SD',
-        'SEA',
-        'SF',
-        'STL',
-        'TB',
-        'TEX',
-        'TOR',
-        'WSH'
-      ],
-    },
-    default: []
-  },
   color: {
     type: 'object',
     properties: {
@@ -109,7 +70,46 @@ const schema = {
       },
     },
     default: {}
-  }
+  },
+  favorites: {
+    type: 'array',
+    items: {
+      type: 'string',
+      enum: [
+        'ATL',
+        'AZ',
+        'BAL',
+        'BOS',
+        'CHC',
+        'CIN',
+        'CLE',
+        'COL',
+        'CWS',
+        'DET',
+        'HOU',
+        'KC',
+        'LAA',
+        'LAD',
+        'MIA',
+        'MIL',
+        'MIN',
+        'NYM',
+        'NYY',
+        'OAK',
+        'PHI',
+        'PIT',
+        'SD',
+        'SEA',
+        'SF',
+        'STL',
+        'TB',
+        'TEX',
+        'TOR',
+        'WSH'
+      ],
+    },
+    default: []
+  },
 };
 
 const config = new Conf({
@@ -140,12 +140,16 @@ export function set(key, value) {
 }
 
 export function unset(key) {
-  return config.delete(key);
+  if (key) {
+    return config.delete(key);
+  } else {
+    return config.clear();
+  }
 }
 
 function flatten(obj) {
   const result = {};
-  for (const [key, value] of Object.entries(obj)) {
+  for (const [key, value] of Object.entries(obj).sort()) {
     if (value != null && typeof value === 'object' && !Array.isArray(value)) {
       const sub = flatten(value);
       for (const [subkey, subvalue] of Object.entries(sub)) {
