@@ -21,6 +21,10 @@
   "bin": {
     "playball": "./bin/playball.js"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/paaatrick/playball.git"
