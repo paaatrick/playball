@@ -1,27 +1,28 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectAllPlays, selectTeams } from '../features/games';
+import { selectAllPlays, selectTeams } from '../features/games.js';
 
-import style from '../style';
+import { get } from '../config.js';
+import style from '../style/index.js';
 
 
 function getPlayResultColor(play) {
   const lastPlay = play.playEvents[play.playEvents.length - 1]?.details;
   if (!lastPlay) {
-    return 'white';
+    return get('color.other-event');
   } else if (lastPlay.isBall) {
-    return 'green';
+    return get('color.walk');
   } else if (lastPlay.isStrike) {
-    return 'red';
+    return get('color.strike-out');
   } else if (lastPlay.isInPlay && !play.about.hasOut) {
-    return 'blue';
+    return get('color.in-play-no-out');
   } else {
-    return 'white';
+    return get('color.in-play-out');
   }
 }
 
 function formatOut(out) {
-  return ` {bold}${out} out{/bold}`;
+  return ` {bold}${out} out{/}`;
 }
 
 
@@ -30,10 +31,10 @@ function AllPlays() {
   const teams = useSelector(selectTeams);
 
   const formatScoreDetail = (scoreObj) => (
-    ' {bold}{white-bg}{black-fg} ' + 
+    ` {bold}{${get('color.in-play-runs-bg')}-bg}{${get('color.in-play-runs-fg')}-fg} ` + 
     `${teams.away.abbreviation} ${scoreObj.awayScore} - ` +
     `${teams.home.abbreviation} ${scoreObj.homeScore}` + 
-    ' {/black-fg}{/white-bg}{/bold}'
+    ' {/}'
   );
 
   let inning = '';
@@ -49,12 +50,12 @@ function AllPlays() {
       if (lines.length > 0) {
         lines.push('');
       }
-      lines.push(`{bold}[${inning.toUpperCase()}]{/bold}`);
+      lines.push(`{bold}[${inning.toUpperCase()}]{/}`);
     }
 
     if (play.about.isComplete) {
       const color = getPlayResultColor(play);
-      let line = `{${color}-fg}[${play.result.event}]{/${color}-fg} ${play.result.description}`;
+      let line = `{${color}-fg}[${play.result.event}]{/} ${play.result.description}`;
       if (play.about.hasOut) {
         const lastOut = play.playEvents[play.playEvents.length - 1].count.outs;
         if (lastOut !== play.count.outs) {
@@ -71,7 +72,7 @@ function AllPlays() {
       if (event.type === 'action') {
         let line = '';
         if (event.details.event) {
-          line += `[${event.details.event}] `;
+          line += `{${get('color.other-event')}-fg}[${event.details.event}]{/} `;
         }
         line += event.details.description;
         if (event.isScoringPlay || event.details.isScoringPlay) {

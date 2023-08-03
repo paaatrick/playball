@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { createAsyncThunk, createSlice, createSelector } from '@reduxjs/toolkit';
+import reduxjsToolkit from '@reduxjs/toolkit';
+const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
 import { format } from 'date-fns';
 
 const initialState = {

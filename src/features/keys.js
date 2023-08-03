@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import screen from '../screen';
+import reduxjsToolkit from '@reduxjs/toolkit';
+const { createSlice } = reduxjsToolkit;
+import screen from '../screen.js';
 
 export const keysSlice = createSlice({
   name: 'keys',
@@ -12,7 +13,7 @@ export const keysSlice = createSlice({
         }
       },
       prepare: (key, listener, help) => {
-        screen.key(key, listener);
+        screen().key(key, listener);
         return { payload: help };
       }
     },
@@ -26,7 +27,7 @@ export const keysSlice = createSlice({
         }
       },
       prepare: (key, listener, help) => {
-        screen.unkey(key, listener);
+        screen().unkey(key, listener);
         return { payload: help };
       }
     }

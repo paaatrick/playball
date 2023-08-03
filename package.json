@@ -14,11 +14,10 @@
     "clean": "rimraf ./dist",
     "compile": "babel src --out-dir dist",
     "lint": "eslint --ext .jsx,.js src",
-    "start": "babel-node ./src/main.js",
+    "start": "babel src --out-dir dist --watch",
     "prepublishOnly": "npm run build",
     "react-devtools": "react-devtools"
   },
-  "main": "dist/main.js",
   "bin": {
     "playball": "./bin/playball.js"
   },
@@ -37,6 +36,8 @@
     "@reduxjs/toolkit": "^1.8.0",
     "axios": "^0.26.1",
     "blessed": "^0.1.81",
+    "commander": "^11.0.0",
+    "conf": "^11.0.1",
     "date-fns": "^2.28.0",
     "json-patch": "^0.7.0",
     "prop-types": "^15.8.1",
@@ -46,6 +47,7 @@
     "react-devtools-core": "^4.24.7",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
+    "update-notifier": "^6.0.2",
     "winston": "^3.7.2"
   },
   "devDependencies": {
@@ -61,14 +63,16 @@
     "rimraf": "^2.6.3",
     "ws": "^8.5.0"
   },
+  "type": "module",
   "babel": {
     "presets": [
       [
         "@babel/preset-env",
         {
           "targets": {
-            "node": "10"
-          }
+            "node": "14"
+          },
+          "modules": false
         }
       ],
       "@babel/preset-react"
@@ -78,7 +82,7 @@
         "module-resolver",
         {
           "alias": {
-            "react-redux": "react-redux/lib/alternate-renderers"
+            "react-redux": "react-redux/lib/alternate-renderers.js"
           }
         }
       ]

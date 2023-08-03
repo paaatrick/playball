@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games';
-import LineScore from './LineScore';
+import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games.js';
+import LineScore from './LineScore.js';
 
 const getPlayer = (id, boxscore) => {
   const homePlayer = boxscore.home?.players?.['ID' + id];

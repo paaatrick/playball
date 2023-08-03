@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { addKeyListener, removeKeyListener } from '../features/keys';
+import { addKeyListener, removeKeyListener } from '../features/keys.js';
 
 function useKey(key, handler, help) {
   const dispatch = useDispatch();

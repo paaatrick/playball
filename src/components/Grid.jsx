@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import useKey from '../hooks/useKey';
+import useKey from '../hooks/useKey.js';
 
 function Grid({ items, itemHeight, itemMinWidth, onSelect }) {
   const containerRef = useRef();

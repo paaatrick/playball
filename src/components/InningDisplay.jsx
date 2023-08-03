@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectLineScore } from '../features/games';
+import { selectLineScore } from '../features/games.js';
 
 function InningDisplay() {
   const linescore = useSelector(selectLineScore);

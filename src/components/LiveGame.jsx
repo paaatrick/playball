@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Count from './Count';
-import Bases from './Bases';
-import LineScore from './LineScore';
-import Matchup from './Matchup';
-import AtBat from './AtBat';
-import AllPlays from './AllPlays';
-import InningDisplay from './InningDisplay';
+import Count from './Count.js';
+import Bases from './Bases.js';
+import LineScore from './LineScore.js';
+import Matchup from './Matchup.js';
+import AtBat from './AtBat.js';
+import AllPlays from './AllPlays.js';
+import InningDisplay from './InningDisplay.js';
 
 function LiveGame()  {
   return (
