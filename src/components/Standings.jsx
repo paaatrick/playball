@@ -26,7 +26,7 @@ function formatTeamRow(record) {
     record.gamesBack.padStart(6) + 
     record.wildCardGamesBack.padStart(6) + 
     `${lastTen.wins}-${lastTen.losses}`.padStart(6) + 
-    record.streak.streakCode.padStart(5);
+    (record.streak?.streakCode || '').padStart(5);
 }
 
 function Division({record, top, left, width}) {
