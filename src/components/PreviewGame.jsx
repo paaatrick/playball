@@ -13,7 +13,7 @@ const formatPitcherName = (pitcher) => {
 };
 
 const formatTeam = (teams, probables, boxscore, homeAway) => {
-  const pitcherId = probables[homeAway].id;
+  const pitcherId = probables[homeAway]?.id;
   const pitcher = boxscore[homeAway].players['ID' + pitcherId];
   let lines = [
     teams[homeAway].teamName,
@@ -26,6 +26,8 @@ const formatTeam = (teams, probables, boxscore, homeAway) => {
       `${pitcher.seasonStats?.pitching?.wins}-${pitcher.seasonStats?.pitching?.losses}`,
       `${pitcher.seasonStats?.pitching?.era} ERA ${pitcher.seasonStats?.pitching?.strikeOuts} K`,
     ]);
+  } else {
+    lines = lines.concat(['TBD']);
   }
   return lines;
 };
