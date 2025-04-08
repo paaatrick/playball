@@ -24,6 +24,12 @@ Then run it
 $ playball
 ```
 
+### Docker
+```
+$ docker build -t playball .
+$ docker run -it --rm --name playball playball:latest
+```
+
 ### Keys
 #### Global
 key | action
