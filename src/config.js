@@ -126,7 +126,7 @@ function serialize(value) {
 
 function deserialize(key, value) {
   if (value && schema[key]?.type === 'array') {
-    return value.split(/\s*,\s*/);
+    return value.split(/[\s,]+/);
   }
   return value;
 }
