@@ -7,6 +7,7 @@ import Matchup from './Matchup.js';
 import AtBat from './AtBat.js';
 import AllPlays from './AllPlays.js';
 import InningDisplay from './InningDisplay.js';
+import PitchPlot from './PitchPlot.js';
 
 function LiveGame()  {
   return (
@@ -31,7 +32,10 @@ function LiveGame()  {
           <element top={0} height={2}>
             <Matchup />
           </element>
-          <element top={3}>
+          <element top={3} height={15}>
+            <PitchPlot />
+          </element>
+          <element top={19}>
             <AtBat />
           </element>
         </element>
