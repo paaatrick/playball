@@ -25,11 +25,19 @@ function LiveGame()  {
       const home = teams.home.abbreviation;
       const away = teams.away.abbreviation;
 
-      const currentInning = linescore.currentInning;
       let inning = '';
-      if (currentInning && gameStatus.detailedState !== 'Warmup') {
-        const upDown = linescore.isTopInning ? '▲' : '▼';
-        inning = ` ${upDown} ${currentInning}`;
+      if (gameStatus.detailedState === 'Postponed') {
+        inning = 'PPD';
+      } else if (gameStatus.detailedState === 'Cancelled') {
+        inning = 'C';
+      } else if (gameStatus.detailedState === 'Final') {
+        inning = 'F';
+      } else if (gameStatus.detailedState !== 'Pre-Game' && gameStatus.detailedState !== 'Warmup') {
+        const currentInning = linescore.currentInning;
+        if (currentInning) {
+          const upDown = linescore.isTopInning ? '▲' : '▼';
+          inning = ` ${upDown} ${currentInning}`;
+        }
       }
 
       setTitle(`${away} ${awayRuns} - ${home} ${homeRuns}${inning}`);
