@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import Count from './Count.js';
 import Bases from './Bases.js';
@@ -8,7 +9,37 @@ import AtBat from './AtBat.js';
 import AllPlays from './AllPlays.js';
 import InningDisplay from './InningDisplay.js';
 
+import { get } from '../config.js';
+import { selectGameStatus, selectLineScore, selectTeams } from '../features/games.js';
+import { resetTitle, setTitle } from '../screen.js';
+
 function LiveGame()  {
+  const gameStatus = useSelector(selectGameStatus);
+  const linescore = useSelector(selectLineScore);
+  const teams = useSelector(selectTeams);
+
+  useEffect(() => {
+    if (get('title')) {
+      const homeRuns = linescore.teams['home'].runs;
+      const awayRuns = linescore.teams['away'].runs;
+      const home = teams.home.abbreviation;
+      const away = teams.away.abbreviation;
+
+      const currentInning = linescore.currentInning;
+      let inning = '';
+      if (currentInning && gameStatus.detailedState !== 'Warmup') {
+        const upDown = linescore.isTopInning ? '▲' : '▼';
+        inning = ` ${upDown} ${currentInning}`;
+      }
+
+      setTitle(`${away} ${awayRuns} - ${home} ${homeRuns}${inning}`);
+
+      return () => {
+        resetTitle();
+      };
+    }
+  }, [gameStatus, get, linescore, resetTitle, setTitle, teams]);
+
   return (
     <element>
       <element top={0} left={1} width='100%-1' height={3}>

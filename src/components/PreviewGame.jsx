@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
+
+import { get } from '../config.js';
 import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers, selectGameStatus } from '../features/games.js';
+import { resetTitle, setTitle } from '../screen.js';
 
 const formatPitcherName = (pitcher) => {
   let display = pitcher.person.fullName;
@@ -42,6 +45,29 @@ function PreviewGame() {
   const away = formatTeam(teams, probables, boxscore, 'away');
   const home = formatTeam(teams, probables, boxscore, 'home');
   const formattedStart = status.startTimeTBD ? 'Start time TBD' : format(new Date(startTime), 'MMMM d, yyy p');
+
+  useEffect(() => {
+    if (get('title')) {
+      const home = teams.home.abbreviation;
+      const away = teams.away.abbreviation;
+
+      // Only show the date if it's not today.
+      const startDate = new Date(startTime);
+      const today = format(new Date(), 'yyyy-DDD');
+      const gameDay = format(startDate, 'yyyy-DDD');
+      let start = format(startDate, 'p');
+      if (today !== gameDay) {
+        start = `${format(startDate, 'MMMM d, yyy')} ${start}`;
+      }
+
+      setTitle(`${away} - ${home} @ ${start}`);
+
+      return () => {
+        resetTitle();
+      };
+    }
+  }, [get, resetTitle, setTitle, startTime, teams]);
+
   return (
     <element>
       <element height='60%'>

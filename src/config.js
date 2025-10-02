@@ -110,6 +110,10 @@ const schema = {
     },
     default: []
   },
+  'title': {
+    type: 'boolean',
+    default: false,
+  }
 };
 
 const config = new Conf({
@@ -127,6 +131,8 @@ function serialize(value) {
 function deserialize(key, value) {
   if (value && schema[key]?.type === 'array') {
     return value.split(/\s*,\s*/);
+  } else if (schema[key]?.type === 'boolean') {
+    return value === 'true';
   }
   return value;
 }
