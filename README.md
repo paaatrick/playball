@@ -27,7 +27,7 @@ $ playball
 ### Docker
 ```
 $ docker build -t playball .
-$ docker run -it --rm --name playball playball:latest
+$ docker run -it --rm --tz local --name playball playball:latest
 ```
 
 ### Keys
