@@ -2,6 +2,7 @@
 Watch MLB games from the comfort of your own terminal
 
 ![screenshot](./demo.gif)
+![screenshot-play](./demo-live.gif)
 
 ### Why?
 [MLB Gameday](http://www.mlb.com/mlb/gameday/#) and [MLB.tv](http://mlb.tv) are
