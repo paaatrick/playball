@@ -113,6 +113,7 @@ key | description | default | allowed values
 `color.strike-out` | Color of result where play ends on a strike (strike out) in list of plays in game view | red | _See above_
 `color.walk` | Color of result where play ends on a ball (walk, hit by pitch) in list of plays in game view | green | _See above_
 `favorites` | Teams to highlight in schedule and standings views | | Any one of the following: `ATL`, `AZ`, `BAL`, `BOS`, `CHC`, `CIN`, `CLE`, `COL`, `CWS`, `DET`, `HOU`, `KC`, `LAA`, `LAD`, `MIA`, `MIL`, `MIN`, `NYM`, `NYY`, `OAK`, `PHI`, `PIT`, `SD`, `SEA`, `SF`, `STL`, `TB`, `TEX`, `TOR`, `WSH`. Or a comma-separated list of multiple (e.g. `SEA,MIL`).<br/><br />Note: in some terminals the list must be quoted: `playball config favorites "SEA,MIL"`
+`title` | If enabled, the terminal title will be set to the score of the current game | `false` | `false`, `true`
 
 ### Development
 ```

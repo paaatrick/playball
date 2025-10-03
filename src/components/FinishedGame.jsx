@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games.js';
+
 import LineScore from './LineScore.js';
+
+import { get } from '../config.js';
+import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games.js';
+import { resetTitle, setTitle } from '../screen.js';
 
 const getPlayer = (id, boxscore) => {
   const homePlayer = boxscore.home?.players?.['ID' + id];
@@ -53,6 +57,21 @@ function FinishedGame() {
   const linescore = useSelector(selectLineScore);
   const status = useSelector(selectGameStatus);
   const teams = useSelector(selectTeams);
+
+  useEffect(() => {
+    if (get('title')) {
+      const homeRuns = linescore.teams['home'].runs;
+      const awayRuns = linescore.teams['away'].runs;
+      const home = teams.home.abbreviation;
+      const away = teams.away.abbreviation;
+
+      setTitle(`${away} ${awayRuns} - ${home} ${homeRuns} F`);
+
+      return () => {
+        resetTitle();
+      };
+    }
+  }, [get, linescore, resetTitle, setTitle, teams]);
 
   const awayTeam = `${teams.away.teamName}\n(${teams.away.record.wins}-${teams.away.record.losses})`;
   const homeTeam = `${teams.home.teamName}\n(${teams.home.record.wins}-${teams.home.record.losses})`;
