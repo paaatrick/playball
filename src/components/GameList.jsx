@@ -8,7 +8,7 @@ import Grid from './Grid.js';
 import useKey from '../hooks/useKey.js';
 
 const formatGame = game => {
-  const startTime = format(new Date(game.gameDate), 'p');
+  const startTime = game.status.startTimeTBD ? 'TBD' : format(new Date(game.gameDate), 'p');
   const start = (game.doubleHeader === 'Y' && game.gameNumber > 1) ? 
     'Game ' + game.gameNumber :
     startTime;
