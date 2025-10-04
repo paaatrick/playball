@@ -30,6 +30,14 @@ $ docker build -t playball .
 $ docker run -it --rm --name playball playball:latest
 ```
 
+#### Build options
+
+Update the language encoding of by adding `--build-args`
+
+```
+$ docker build --build-arg LANG=en_US.UTF-8 -t playball .
+```
+
 ### Keys
 #### Global
 key | action
