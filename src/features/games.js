@@ -11,10 +11,29 @@ const initialState = {
   games: {},
 };
 
+function makeDiffParams(start, end) {
+  const endParam = start ? '&endTimecode=' : '?timecode=';
+  const startParam = start ? `/diffPatch?startTimecode=${start}` : '';
+  if (end) {
+    return `${startParam}${endParam}${end}`;
+  } else {
+    return startParam;
+  }
+}
+
 export const fetchGame = createAsyncThunk(
   'games/fetch',
-  async ({id, start}) => {
-    const diffParams = start ? `/diffPatch?startTimecode=${start}` : '';
+  async ({id, start, delay}) => {
+    // date-fns v2 doesn't provide a way to override the locale timezone, so we
+    // have to manually create the UTC timecode as the API expects.
+    // Timecode format: yyyyMMdd_HHmmss
+    const end = delay
+      ? new Date(Date.now() - Math.max(0, delay) * 1000)
+        .toLocaleString('ISO', { hour12: false })
+        .replace(/[:-]/g, '')
+        .replace(' ', '_')
+      : null;
+    const diffParams = makeDiffParams(start, end);
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
     const response = await axios.get(url);
     return response.data;

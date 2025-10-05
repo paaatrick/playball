@@ -113,6 +113,11 @@ const schema = {
   'title': {
     type: 'boolean',
     default: false,
+  },
+  'live-delay': {
+    type: 'number',
+    default: 0,
+    minimum: 0,
   }
 };
 
@@ -133,6 +138,8 @@ function deserialize(key, value) {
     return value.split(/\s*,\s*/);
   } else if (schema[key]?.type === 'boolean') {
     return value === 'true';
+  } else if (schema[key]?.type === 'number') {
+    return parseInt(value);
   }
   return value;
 }
