@@ -2,6 +2,8 @@ import axios from 'axios';
 import reduxjsToolkit from '@reduxjs/toolkit';
 const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
 import jsonpatch from 'json-patch';
+import { UTCDate } from '@date-fns/utc';
+import { addSeconds, format } from 'date-fns';
 
 const initialState = {
   loading: false,
@@ -24,14 +26,8 @@ function makeDiffParams(start, end) {
 export const fetchGame = createAsyncThunk(
   'games/fetch',
   async ({id, start, delay}) => {
-    // date-fns v2 doesn't provide a way to override the locale timezone, so we
-    // have to manually create the UTC timecode as the API expects.
-    // Timecode format: yyyyMMdd_HHmmss
-    const end = delay
-      ? new Date(Date.now() - Math.max(0, delay) * 1000)
-        .toLocaleString('ISO', { hour12: false, timeZone: 'UTC' })
-        .replace(/[:-]/g, '')
-        .replace(' ', '_')
+    const end = delay > 0
+      ? format(addSeconds(new UTCDate(Date.now(), -delay)), 'yyyyMMdd_HHmmss')
       : null;
     const diffParams = makeDiffParams(start, end);
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
