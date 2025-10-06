@@ -29,7 +29,7 @@ export const fetchGame = createAsyncThunk(
     // Timecode format: yyyyMMdd_HHmmss
     const end = delay
       ? new Date(Date.now() - Math.max(0, delay) * 1000)
-        .toLocaleString('ISO', { hour12: false })
+        .toLocaleString('ISO', { hour12: false, timeZone: 'UTC' })
         .replace(/[:-]/g, '')
         .replace(' ', '_')
       : null;
