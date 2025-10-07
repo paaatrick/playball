@@ -2,6 +2,8 @@ import axios from 'axios';
 import reduxjsToolkit from '@reduxjs/toolkit';
 const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
 import jsonpatch from 'json-patch';
+import { UTCDate } from '@date-fns/utc';
+import { addSeconds, format } from 'date-fns';
 
 const initialState = {
   loading: false,
@@ -11,10 +13,23 @@ const initialState = {
   games: {},
 };
 
+function makeDiffParams(start, end) {
+  const endParam = start ? '&endTimecode=' : '?timecode=';
+  const startParam = start ? `/diffPatch?startTimecode=${start}` : '';
+  if (end) {
+    return `${startParam}${endParam}${end}`;
+  } else {
+    return startParam;
+  }
+}
+
 export const fetchGame = createAsyncThunk(
   'games/fetch',
-  async ({id, start}) => {
-    const diffParams = start ? `/diffPatch?startTimecode=${start}` : '';
+  async ({id, start, delay}) => {
+    const end = delay > 0
+      ? format(addSeconds(new UTCDate(Date.now()), -delay), 'yyyyMMdd_HHmmss')
+      : null;
+    const diffParams = makeDiffParams(start, end);
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
     const response = await axios.get(url);
     return response.data;
