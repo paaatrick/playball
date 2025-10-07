@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { format } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 
 import { get } from '../config.js';
 import { selectTeams, selectVenue, selectStartTime, selectBoxscore, selectProbablePitchers, selectGameStatus } from '../features/games.js';
@@ -53,10 +53,9 @@ function PreviewGame() {
 
       // Only show the date if it's not today.
       const startDate = new Date(startTime);
-      const today = format(new Date(), 'yyyy-DDD');
-      const gameDay = format(startDate, 'yyyy-DDD');
+      const today = new Date();
       let start = format(startDate, 'p');
-      if (today !== gameDay) {
+      if (!isSameDay(startDate, today)) {
         start = `${format(startDate, 'MMMM d, yyy')} ${start}`;
       }
 
