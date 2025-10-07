@@ -27,7 +27,7 @@ export const fetchGame = createAsyncThunk(
   'games/fetch',
   async ({id, start, delay}) => {
     const end = delay > 0
-      ? format(addSeconds(new UTCDate(Date.now(), -delay)), 'yyyyMMdd_HHmmss')
+      ? format(addSeconds(new UTCDate(Date.now()), -delay), 'yyyyMMdd_HHmmss')
       : null;
     const diffParams = makeDiffParams(start, end);
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
