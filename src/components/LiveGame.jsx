@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
 import Count from './Count.js';
 import Bases from './Bases.js';
@@ -8,8 +8,17 @@ import AtBat from './AtBat.js';
 import AllPlays from './AllPlays.js';
 import InningDisplay from './InningDisplay.js';
 import PitchPlot from './PitchPlot.js';
+import useKey from '../hooks/useKey.js';
 
 function LiveGame()  {
+  const [focusedPanel, setFocusedPanel] = useState('right'); // 'left' or 'right'
+
+  // Switch to left panel (AtBat pitch-by-pitch)
+  useKey(['left', 'h'], useCallback(() => setFocusedPanel('left'), []), { key: '←', label: 'Focus Left' });
+
+  // Switch to right panel (AllPlays play-by-play)
+  useKey(['right', 'l'], useCallback(() => setFocusedPanel('right'), []), { key: '→', label: 'Focus Right' });
+
   return (
     <element>
       <element top={0} left={1} width='100%-1' height={3}>
@@ -32,16 +41,16 @@ function LiveGame()  {
           <element top={0} height={2}>
             <Matchup />
           </element>
-          <element top={3} height={18}>
+          <element top={3} height={15}>
             <PitchPlot />
           </element>
-          <element top={22}>
-            <AtBat />
+          <element top={19}>
+            <AtBat focused={focusedPanel === 'left'} />
           </element>
         </element>
         <line orientation='vertical' type='line' left='50%' />
         <element left='50%+2' width='50%-2'>
-          <AllPlays />
+          <AllPlays focused={focusedPanel === 'right'} />
         </element>
       </element>
     </element>

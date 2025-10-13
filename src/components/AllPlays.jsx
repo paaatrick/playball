@@ -26,7 +26,7 @@ function formatOut(out) {
 }
 
 
-function AllPlays() {
+function AllPlays({ focused = true }) {
   const plays = useSelector(selectAllPlays);
   const teams = useSelector(selectTeams);
 
@@ -93,13 +93,13 @@ function AllPlays() {
   return (
     <box
       content={lines.join('\n')}
-      focused 
-      mouse 
-      keys 
+      focused={focused}
+      mouse
+      keys
       vi
-      scrollable 
-      scrollbar={style.scrollbar} 
-      alwaysScroll 
+      scrollable
+      scrollbar={style.scrollbar}
+      alwaysScroll
       tags
     />
   );
