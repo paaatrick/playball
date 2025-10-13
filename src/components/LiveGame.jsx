@@ -32,10 +32,10 @@ function LiveGame()  {
           <element top={0} height={2}>
             <Matchup />
           </element>
-          <element top={3} height={15}>
+          <element top={3} height={18}>
             <PitchPlot />
           </element>
-          <element top={19}>
+          <element top={22}>
             <AtBat />
           </element>
         </element>

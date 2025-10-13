@@ -9,8 +9,8 @@ const ZONE_MIN_X = -0.708;
 const ZONE_MAX_X = 0.708;
 
 // Terminal grid dimensions
-const GRID_WIDTH = 21;
-const GRID_HEIGHT = 13;
+const GRID_WIDTH = 29;
+const GRID_HEIGHT = 15;
 
 function PitchPlot() {
   const currentPlay = useSelector(selectCurrentPlay);
@@ -24,11 +24,13 @@ function PitchPlot() {
   // Create grid
   const grid = Array(GRID_HEIGHT).fill(null).map(() => Array(GRID_WIDTH).fill(' '));
 
-  // Draw strike zone box
-  const zoneLeft = 6;
-  const zoneRight = 14;
+  // Draw strike zone box (16 chars wide x 11 chars tall for proper aspect ratio)
+  // Real strike zone: 17" wide x ~24" tall (1:1.41 ratio)
+  // Terminal chars are ~1:2 (w:h), so we need 16x11 to look correct
+  const zoneLeft = 7;
+  const zoneRight = 22;  // 7 + 15 = 22 (16 chars wide including borders)
   const zoneTop = 2;
-  const zoneBottom = 10;
+  const zoneBottom = 12;  // 2 + 10 = 12 (11 chars tall including borders)
 
   // Top and bottom borders
   for (let x = zoneLeft; x <= zoneRight; x++) {
@@ -112,10 +114,8 @@ function PitchPlot() {
       const pitchNum = (index + 1) % 10; // Use single digit
       const color = getPitchColor(pitch);
 
-      // Only overwrite if it's a space or border character we can replace
-      if (grid[pos.y][pos.x] === ' ' || grid[pos.y][pos.x] === '┊' || grid[pos.y][pos.x] === '┈') {
-        grid[pos.y][pos.x] = `{${color}-fg}${pitchNum}{/}`;
-      }
+      // Always place pitch, even if it overlays borders/corners
+      grid[pos.y][pos.x] = `{${color}-fg}${pitchNum}{/}`;
     }
   });
 
@@ -136,6 +136,7 @@ function PitchPlot() {
       left={0}
       width='100%'
       height={GRID_HEIGHT + 2}
+      align='center'
     />
   );
 }
