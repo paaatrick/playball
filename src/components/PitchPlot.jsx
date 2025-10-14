@@ -24,13 +24,14 @@ function PitchPlot() {
   // Create grid
   const grid = Array(GRID_HEIGHT).fill(null).map(() => Array(GRID_WIDTH).fill(' '));
 
-  // Draw strike zone box (16 chars wide x 11 chars tall for proper aspect ratio)
-  // Real strike zone: 17" wide x ~24" tall (1:1.41 ratio)
-  // Terminal chars are ~1:2 (w:h), so we need 16x11 to look correct
-  const zoneLeft = 7;
-  const zoneRight = 22;  // 7 + 15 = 22 (16 chars wide including borders)
+  // Draw strike zone box (14 chars wide x 10 chars tall for proper aspect ratio)
+  // Real strike zone: 17" wide x ~24" tall (ratio 0.708)
+  // Terminal chars are ~1:2 (w:h), so 14x10 → 1.4÷2 = 0.7 (almost perfect!)
+  // Perfect 3x3 grid: 12 interior cols ÷ 3 = 4,4,4 and 9 interior rows ÷ 3 = 3,3,3
+  const zoneLeft = 8;
+  const zoneRight = 21;  // 8 + 13 = 21 (14 chars wide including borders)
   const zoneTop = 2;
-  const zoneBottom = 12;  // 2 + 10 = 12 (11 chars tall including borders)
+  const zoneBottom = 11;  // 2 + 9 = 11 (10 chars tall including borders)
 
   // Top and bottom borders
   for (let x = zoneLeft; x <= zoneRight; x++) {
@@ -51,10 +52,12 @@ function PitchPlot() {
   grid[zoneBottom][zoneRight] = '┘';
 
   // Middle lines to create 3x3 grid
-  const midX1 = zoneLeft + Math.floor((zoneRight - zoneLeft) / 3);
-  const midX2 = zoneLeft + Math.floor(2 * (zoneRight - zoneLeft) / 3);
-  const midY1 = zoneTop + Math.floor((zoneBottom - zoneTop) / 3);
-  const midY2 = zoneTop + Math.floor(2 * (zoneBottom - zoneTop) / 3);
+  // With 12 interior cols and 9 interior rows, divide evenly: 4+4+4 and 3+3+3
+  // Adjusted midX2 to +9 to account for character rendering at left edge
+  const midX1 = zoneLeft + 4;  // First vertical divider at column 4
+  const midX2 = zoneLeft + 9;  // Second vertical divider at column 9 (adjusted for visual centering)
+  const midY1 = zoneTop + 3;   // First horizontal divider at row 3
+  const midY2 = zoneTop + 6;   // Second horizontal divider at row 6
 
   // Vertical middle lines
   for (let y = zoneTop + 1; y < zoneBottom; y++) {
@@ -75,14 +78,19 @@ function PitchPlot() {
 
   // Map pitch coordinates to grid position
   const mapToGrid = (pX, pZ) => {
-    // Expand view beyond strike zone (2x wider, slightly taller)
-    const viewMinX = ZONE_MIN_X * 2;
+    // Define view area (extends beyond strike zone to show balls)
+    const viewMinX = ZONE_MIN_X * 2;  // 2x wider horizontally
     const viewMaxX = ZONE_MAX_X * 2;
-    const viewMinZ = strikeZoneBottom - 1;
-    const viewMaxZ = strikeZoneTop + 1;
+    const viewMinZ = strikeZoneBottom - 1;  // 1 foot below zone
+    const viewMaxZ = strikeZoneTop + 1;     // 1 foot above zone
 
-    const x = Math.floor(((pX - viewMinX) / (viewMaxX - viewMinX)) * GRID_WIDTH);
-    const y = Math.floor(((viewMaxZ - pZ) / (viewMaxZ - viewMinZ)) * GRID_HEIGHT);
+    // Calculate position within view (0 to 1)
+    const xRatio = (pX - viewMinX) / (viewMaxX - viewMinX);
+    const yRatio = (viewMaxZ - pZ) / (viewMaxZ - viewMinZ);  // Inverted: higher pZ = lower y
+
+    // Map to grid coordinates
+    const x = Math.floor(xRatio * GRID_WIDTH);
+    const y = Math.floor(yRatio * GRID_HEIGHT);
 
     return {
       x: Math.max(0, Math.min(GRID_WIDTH - 1, x)),
