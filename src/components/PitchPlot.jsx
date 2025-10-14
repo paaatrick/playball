@@ -12,6 +12,36 @@ const ZONE_MAX_X = 0.708;
 const GRID_WIDTH = 29;
 const GRID_HEIGHT = 15;
 
+// Bresenham's line algorithm - returns array of {x, y} points between two coordinates
+const getLinePoints = (start, end) => {
+  const points = [];
+  let x0 = start.x;
+  let y0 = start.y;
+  const x1 = end.x;
+  const y1 = end.y;
+  const dx = Math.abs(x1 - x0);
+  const dy = Math.abs(y1 - y0);
+  const sx = x0 < x1 ? 1 : -1;
+  const sy = y0 < y1 ? 1 : -1;
+  let err = dx - dy;
+
+  while (true) {
+    points.push({ x: x0, y: y0 });
+    if (x0 === x1 && y0 === y1) break;
+    const e2 = 2 * err;
+    if (e2 > -dy) {
+      err -= dy;
+      x0 += sx;
+    }
+    if (e2 < dx) {
+      err += dx;
+      y0 += sy;
+    }
+  }
+
+  return points;
+};
+
 function PitchPlot() {
   const currentPlay = useSelector(selectCurrentPlay);
   const linescore = useSelector(selectLineScore);
@@ -113,8 +143,28 @@ function PitchPlot() {
     return 'white';
   };
 
-  // Plot pitches
+  // Draw trajectory line from release point to most recent pitch
   const pitches = playEvents.filter(e => e.isPitch && e.pitchData?.coordinates);
+  if (pitches.length > 0) {
+    const recentPitch = pitches[pitches.length - 1];
+    const coords = recentPitch.pitchData?.coordinates;
+
+    if (coords?.x0 !== undefined && coords?.z0 !== undefined && coords?.pX !== undefined && coords?.pZ !== undefined) {
+      const releasePos = mapToGrid(coords.x0, coords.z0);
+      const pitchPos = mapToGrid(coords.pX, coords.pZ);
+
+      // Draw dotted line from release point to pitch location
+      const linePoints = getLinePoints(releasePos, pitchPos);
+      linePoints.forEach(point => {
+        // Only draw in empty cells (don't overwrite strike zone structure)
+        if (grid[point.y][point.x] === ' ') {
+          grid[point.y][point.x] = '{white-fg}·{/}';
+        }
+      });
+    }
+  }
+
+  // Plot pitches
   pitches.forEach((pitch, index) => {
     const coords = pitch.pitchData.coordinates;
     if (coords.pX !== undefined && coords.pZ !== undefined) {
