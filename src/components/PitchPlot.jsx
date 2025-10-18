@@ -106,6 +106,20 @@ function PitchPlot() {
     }
   }
 
+  // Project 3D release point to catcher's perspective (2D viewing plane)
+  const projectToCatcherView = (x0, y0, z0) => {
+    const CATCHER_EYE_HEIGHT = 3.0; // feet (typical crouch position)
+    const VIEWING_PLANE_DISTANCE = 5.0; // feet behind home plate
+
+    // Perspective scale factor: objects farther away appear smaller/closer to center
+    const scale = VIEWING_PLANE_DISTANCE / (y0 + VIEWING_PLANE_DISTANCE);
+
+    return {
+      x: x0 * scale,
+      z: z0 * scale + CATCHER_EYE_HEIGHT * (1 - scale)
+    };
+  };
+
   // Map pitch coordinates to grid position
   const mapToGrid = (pX, pZ) => {
     // Define view area (extends beyond strike zone to show balls)
@@ -149,8 +163,10 @@ function PitchPlot() {
     const recentPitch = pitches[pitches.length - 1];
     const coords = recentPitch.pitchData?.coordinates;
 
-    if (coords?.x0 !== undefined && coords?.z0 !== undefined && coords?.pX !== undefined && coords?.pZ !== undefined) {
-      const releasePos = mapToGrid(coords.x0, coords.z0);
+    if (coords?.x0 !== undefined && coords?.y0 !== undefined && coords?.z0 !== undefined && coords?.pX !== undefined && coords?.pZ !== undefined) {
+      // Project release point from 3D space to catcher's 2D perspective
+      const projectedRelease = projectToCatcherView(coords.x0, coords.y0, coords.z0);
+      const releasePos = mapToGrid(projectedRelease.x, projectedRelease.z);
       const pitchPos = mapToGrid(coords.pX, coords.pZ);
 
       // Draw dotted line from release point to pitch location
