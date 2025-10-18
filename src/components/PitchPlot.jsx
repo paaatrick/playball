@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentPlay, selectLineScore } from '../features/games.js';
+import { selectCurrentPlay, selectLineScore, selectPlayers } from '../features/games.js';
 import { get } from '../config.js';
 
 // Strike zone dimensions (in feet)
@@ -45,11 +45,17 @@ const getLinePoints = (start, end) => {
 function PitchPlot() {
   const currentPlay = useSelector(selectCurrentPlay);
   const linescore = useSelector(selectLineScore);
+  const players = useSelector(selectPlayers);
   const playEvents = currentPlay?.playEvents || [];
 
   // Get strike zone boundaries for current batter
   const strikeZoneTop = currentPlay?.matchup?.splits?.batter?.strikeZoneTop || 3.5;
   const strikeZoneBottom = currentPlay?.matchup?.splits?.batter?.strikeZoneBottom || 1.5;
+
+  // Get batter handedness
+  const batterId = currentPlay?.matchup?.batter?.id;
+  const batterInfo = players?.['ID' + batterId];
+  const batSide = batterInfo?.batSide?.code; // "L" or "R"
 
   // Create grid
   const grid = Array(GRID_HEIGHT).fill(null).map(() => Array(GRID_WIDTH).fill(' '));
@@ -104,6 +110,20 @@ function PitchPlot() {
       grid[midY1][x] = '┈';
       grid[midY2][x] = '┈';
     }
+  }
+
+  // Add batter handedness indicator
+  // View: catcher's perspective looking out (same as MLB Gameday)
+  // Position: vertically centered next to strike zone, letter outside arrow
+  const batterIndicatorY = Math.floor((zoneTop + zoneBottom) / 2);
+  if (batSide === 'R') {
+    // Right-handed batter stands on LEFT side: R▶[zone]
+    grid[batterIndicatorY][zoneLeft - 3] = '{cyan-fg}R{/}';
+    grid[batterIndicatorY][zoneLeft - 2] = '{cyan-fg}▶{/}';
+  } else if (batSide === 'L') {
+    // Left-handed batter stands on RIGHT side: [zone]◀L
+    grid[batterIndicatorY][zoneRight + 2] = '{cyan-fg}◀{/}';
+    grid[batterIndicatorY][zoneRight + 3] = '{cyan-fg}L{/}';
   }
 
   // Project 3D release point to catcher's perspective (2D viewing plane)
