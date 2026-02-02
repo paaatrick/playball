@@ -26,7 +26,7 @@ $ playball
 
 ### Docker
 ```
-$ docker run -it --rm playball
+$ docker run -it --rm paaatrick0/playball
 ```
 
 > [!TIP]
@@ -34,15 +34,15 @@ $ docker run -it --rm playball
 > 
 > For Central Time use:
 > ```
-> $ docker run -it --rm -e TZ=America/Chicago playball
+> $ docker run -it --rm -e TZ=America/Chicago paaatrick0/playball
 > ```
 > For Mountain Time use:
 > ```
-> $ docker run -it --rm -e TZ=America/Denver playball
+> $ docker run -it --rm -e TZ=America/Denver paaatrick0/playball
 > ```
 > For Pacific Time use:
 > ```
-> $ docker run -it --rm -e TZ=America/Los_Angeles playball
+> $ docker run -it --rm -e TZ=America/Los_Angeles paaatrick0/playball
 > ```
 > For other timezones see the list of [TZ database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
