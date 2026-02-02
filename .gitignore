@@ -1,5 +1,6 @@
 # IDE stuff
 .vscode/
+.idea/
 
 # generated stuff
 dist/
