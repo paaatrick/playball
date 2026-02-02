@@ -26,17 +26,25 @@ $ playball
 
 ### Docker
 ```
-$ docker build -t playball .
-$ docker run -it --rm --name playball playball:latest
+$ docker run -it --rm playball
 ```
 
-#### Build options
-
-Update the language encoding of by adding `--build-args`
-
-```
-$ docker build --build-arg LANG=en_US.UTF-8 -t playball .
-```
+> [!TIP]
+> When running via Docker, times will be shown by default in Eastern Time. To change this, set the `TZ` environment variable to your desired timezone. 
+> 
+> For Central Time use:
+> ```
+> $ docker run -it --rm -e TZ=America/Chicago playball
+> ```
+> For Mountain Time use:
+> ```
+> $ docker run -it --rm -e TZ=America/Denver playball
+> ```
+> For Pacific Time use:
+> ```
+> $ docker run -it --rm -e TZ=America/Los_Angeles playball
+> ```
+> For other timezones see the list of [TZ database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 ### Keys
 #### Global
