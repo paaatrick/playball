@@ -25,6 +25,7 @@ $ playball
 ```
 
 ### Docker
+Don't have Node.js installed? You can run via Docker instead.
 ```
 $ docker run -it --rm paaatrick0/playball
 ```
