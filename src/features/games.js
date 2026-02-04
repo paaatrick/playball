@@ -28,9 +28,7 @@ function makeDiffParams(start, end) {
 
 export const fetchGame = createAsyncThunk(
   'games/fetch',
-  async ({id, start}, { getState }) => {
-    const state = getState();
-    const delay = state.games.delay || 0;
+  async ({id, start, delay}) => {
     const end = delay > 0
       ? format(addSeconds(new UTCDate(Date.now()), -delay), 'yyyyMMdd_HHmmss')
       : null;
@@ -69,11 +67,13 @@ export const gamesSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.selectedId = action.payload.gamePk;
+      state.fullUpdateRequired = true;
       const start = action.payload.gameData.gameInfo.firstPitch || action.payload.gameData.datetime.dateTime;
       state.delay = differenceInSeconds(new Date(), start);
     });
     builder.addCase(setReplayGame.rejected, (state, action) => {
       state.loading = false;
+      state.fullUpdateRequired = true;
       state.error = action.error;
     });
     builder.addCase(fetchGame.pending, (state) => {
@@ -137,6 +137,11 @@ export const selectFullUpdateRequired = createSelector(
 export const selectSelectedId = createSelector(
   gamesRoot,
   root => root.selectedId
+);
+
+export const selectDelay = createSelector(
+  gamesRoot,
+  root => root.delay
 );
 
 export const selectGame = createSelector(

@@ -1,7 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { fetchGame, selectGame, selectSelectedId, selectFullUpdateRequired } from '../features/games.js';
+import {
+  fetchGame,
+  selectGame,
+  selectSelectedId,
+  selectFullUpdateRequired,
+  selectDelay
+} from '../features/games.js';
 
 import PreviewGame from './PreviewGame.js';
 import LiveGame from './LiveGame.js';
@@ -14,12 +20,13 @@ function Game() {
   const game = useSelector(selectGame);
   const fullUpdateRequired = useSelector(selectFullUpdateRequired);
   const id = useSelector(selectSelectedId);
+  const delay = useSelector(selectDelay);
   const timerRef = useRef(null);
   const timestampRef = useRef();
   timestampRef.current = fullUpdateRequired ? null : game?.metaData?.timeStamp;
 
   const updateGameData = () => {
-    dispatch(fetchGame({id, start: timestampRef.current}))
+    dispatch(fetchGame({id, start: timestampRef.current, delay}))
       .unwrap()
       .then((result) => {
         const wait = ((result && result.metaData?.wait) || 10) * 1000;
@@ -33,7 +40,7 @@ function Game() {
     return () => {
       clearTimeout(timerRef.current);
     };
-  }, [id]);
+  }, [id, delay]);
 
   if (!game) { 
     return <element />;
