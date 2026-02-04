@@ -3,13 +3,16 @@ import reduxjsToolkit from '@reduxjs/toolkit';
 const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
 import jsonpatch from 'json-patch';
 import { UTCDate } from '@date-fns/utc';
-import { addSeconds, format } from 'date-fns';
+import { addSeconds, differenceInSeconds, format } from 'date-fns';
+import logger from '../logger.js';
+import { get } from '../config.js';
 
 const initialState = {
   loading: false,
   fullUpdateRequired: false,
   error: null,
   selectedId: null,
+  delay: 0,
   games: {},
 };
 
@@ -25,12 +28,25 @@ function makeDiffParams(start, end) {
 
 export const fetchGame = createAsyncThunk(
   'games/fetch',
-  async ({id, start, delay}) => {
+  async ({id, start}, { getState }) => {
+    const state = getState();
+    const delay = state.games.delay || 0;
     const end = delay > 0
       ? format(addSeconds(new UTCDate(Date.now()), -delay), 'yyyyMMdd_HHmmss')
       : null;
     const diffParams = makeDiffParams(start, end);
     const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live${diffParams}`;
+    logger.info(`GET ${url}`);
+    const response = await axios.get(url);
+    return response.data;
+  }
+);
+
+export const setReplayGame = createAsyncThunk(
+  'games/setReplay',
+  async (id) => {
+    const url = `https://statsapi.mlb.com/api/v1.1/game/${id}/feed/live?fields=gamePk,gameData,datetime,gameInfo,dateTime,firstPitch`;
+    logger.info(`GET ${url}`);
     const response = await axios.get(url);
     return response.data;
   }
@@ -40,11 +56,26 @@ export const gamesSlice = createSlice({
   name: 'games',
   initialState,
   reducers: { 
-    setSelectedId(state, action) {
+    setLiveGame(state, action) {
       state.selectedId = action.payload;
-    }
+      state.delay = get('live-delay') || 0;
+    },
   },
   extraReducers: (builder) => {
+    builder.addCase(setReplayGame.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(setReplayGame.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.selectedId = action.payload.gamePk;
+      const start = action.payload.gameData.gameInfo.firstPitch || action.payload.gameData.datetime.dateTime;
+      state.delay = differenceInSeconds(new Date(), start);
+    });
+    builder.addCase(setReplayGame.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error;
+    });
     builder.addCase(fetchGame.pending, (state) => {
       state.loading = true;
     });
@@ -84,7 +115,7 @@ export const gamesSlice = createSlice({
   }
 });
 
-export const { setSelectedId } = gamesSlice.actions;
+export const { setLiveGame } = gamesSlice.actions;
 
 const gamesRoot = state => state.games;
 

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import GameList from './GameList.js';
 import HelpBar from './HelpBar.js';
-import { setSelectedId } from '../features/games.js';
+import { setReplayGame, setLiveGame } from '../features/games.js';
 import Game from './Game.js';
 import useKey from '../hooks/useKey.js';
 import Standings from './Standings.js';
@@ -11,20 +12,29 @@ const SCHEDULE = 'schedule';
 const STANDINGS = 'standings';
 const GAME = 'game';
 
-function App() {
+function App({ replayId }) {
   const [view, setView] = useState(SCHEDULE);
   const dispatch = useDispatch();
 
   useKey('c', () => {
     setView(SCHEDULE);
-    dispatch(setSelectedId(null));
+    dispatch(setLiveGame(null));
   }, { key: 'C', label: 'Schedule' });
   useKey('s', () => setView(STANDINGS), { key: 'S', label: 'Standings'});
 
   const handleGameSelect = (game) => {
-    dispatch(setSelectedId(game.gamePk));
+    dispatch(setLiveGame(game.gamePk));
     setView(GAME);
   };
+
+  useEffect(() => {
+    if (replayId) {
+      dispatch(setReplayGame(replayId))
+        .unwrap()
+        .then(() => setView(GAME))
+        .catch(() => setView(SCHEDULE));
+    }
+  }, [replayId]);
   
   return (
     <element>
@@ -39,5 +49,9 @@ function App() {
     </element>
   );
 }
+
+App.propTypes = {
+  replayId: PropTypes.string,
+};
 
 export default App;

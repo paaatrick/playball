@@ -8,7 +8,7 @@ import log from './logger.js';
 
 import App from './components/App.js';
 
-export default async function startInterface() {
+export default async function startInterface(options) {
   raf.polyfill();
 
   process.on('uncaughtException', function(error) {
@@ -20,7 +20,7 @@ export default async function startInterface() {
   const reactBlessed = await import('react-blessed');
   reactBlessed.render(
     <Provider store={store}>
-      <App />
+      <App replayId={options.replay} />
     </Provider>, 
     screen()
   );

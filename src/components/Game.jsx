@@ -7,7 +7,6 @@ import PreviewGame from './PreviewGame.js';
 import LiveGame from './LiveGame.js';
 import FinishedGame from './FinishedGame.js';
 
-import { get } from '../config.js';
 import log from '../logger.js';
 
 function Game() {
@@ -20,7 +19,7 @@ function Game() {
   timestampRef.current = fullUpdateRequired ? null : game?.metaData?.timeStamp;
 
   const updateGameData = () => {
-    dispatch(fetchGame({id, start: timestampRef.current, delay: get('live-delay')}))
+    dispatch(fetchGame({id, start: timestampRef.current}))
       .unwrap()
       .then((result) => {
         const wait = ((result && result.metaData?.wait) || 10) * 1000;
