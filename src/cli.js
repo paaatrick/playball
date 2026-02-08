@@ -16,6 +16,7 @@ program
   .name(pkg.name)
   .description(pkg.description)
   .version(pkg.version)
+  .option('--replay <gameId>', 'Replay a game by game ID')
   .action(main)
   .hook('postAction', () => notifier.notify({
     isGlobal: true,

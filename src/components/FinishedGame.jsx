@@ -1,11 +1,20 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
 import LineScore from './LineScore.js';
 
-import { get } from '../config.js';
-import { selectLineScore, selectTeams, selectDecisions, selectBoxscore, selectGameStatus } from '../features/games.js';
-import { resetTitle, setTitle } from '../screen.js';
+import {get} from '../config.js';
+import {
+  selectBoxscore,
+  selectDecisions,
+  selectGameStatus,
+  selectLineScore,
+  selectSelectedId,
+  selectTeams,
+  setReplayGame
+} from '../features/games.js';
+import {resetTitle, setTitle} from '../screen.js';
+import useKey from '../hooks/useKey.js';
 
 const getPlayer = (id, boxscore) => {
   const homePlayer = boxscore.home?.players?.['ID' + id];
@@ -52,11 +61,19 @@ const formatScore = (status, linescore) => {
 };
 
 function FinishedGame() {
+  const dispatch = useDispatch();
+  const id = useSelector(selectSelectedId);
   const boxscore = useSelector(selectBoxscore);
   const decisions = useSelector(selectDecisions);
   const linescore = useSelector(selectLineScore);
   const status = useSelector(selectGameStatus);
   const teams = useSelector(selectTeams);
+
+  useKey(
+    'r',
+    () => dispatch(setReplayGame(id)),
+    { key: 'R', label: 'Replay' }
+  );
 
   useEffect(() => {
     if (get('title')) {
