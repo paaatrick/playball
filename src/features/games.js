@@ -194,6 +194,11 @@ export const selectGameStatus = createSelector(
   game => game.status
 );
 
+export const selectPlayers = createSelector(
+  selectGameData,
+  gameData => gameData.players
+);
+
 export const selectTeams = createSelector(
   selectGameData,
   gameData => gameData.teams
