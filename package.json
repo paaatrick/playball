@@ -16,7 +16,8 @@
     "lint": "eslint --ext .jsx,.js src",
     "start": "babel src --out-dir dist --watch",
     "prepublishOnly": "npm run build",
-    "react-devtools": "react-devtools"
+    "react-devtools": "react-devtools",
+    "test": "echo \"No tests yet\""
   },
   "bin": {
     "playball": "./bin/playball.js"
