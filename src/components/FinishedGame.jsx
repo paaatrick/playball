@@ -17,6 +17,11 @@ import {
 import {resetTitle, setTitle} from '../screen.js';
 import useKey from '../hooks/useKey.js';
 import BoxScore from './BoxScore.js';
+import AllPlays from './AllPlays.js';
+
+const BOX_SCORE = 'BOX_SCORE';
+const ALL_PLAYS = 'ALL_PLAYS';
+const SCORING_PLAYS = 'SCORING_PLAYS';
 
 const getPlayer = (id, boxscore) => {
   const homePlayer = boxscore.home?.players?.['ID' + id];
@@ -57,12 +62,16 @@ function FinishedGame() {
   const linescore = useSelector(selectLineScore);
   const status = useSelector(selectGameStatus);
   const teams = useSelector(selectTeams);
+  const [view, setView] = React.useState(BOX_SCORE);
 
   useKey(
     'r',
     () => dispatch(setReplayGame(id)),
     { key: 'R', label: 'Replay' }
   );
+  useKey('b', () => setView(BOX_SCORE), { key: 'B', label: 'Box Score' });
+  useKey('a', () => setView(ALL_PLAYS), { key: 'A', label: 'All Plays' });
+  useKey('p', () => setView(SCORING_PLAYS), { key: 'P', label: 'Scoring Plays' });
 
   useEffect(() => {
     if (get('title')) {
@@ -140,7 +149,11 @@ function FinishedGame() {
           >
             <box content={formatDecisions(decisions, boxscore)} />
           </element>
-          <BoxScore top={9} />
+          <element top={9}>
+            { view === BOX_SCORE && <BoxScore /> }
+            { view === ALL_PLAYS && <AllPlays /> }
+            { view === SCORING_PLAYS && <AllPlays scoringOnly /> }
+          </element>
         </element>
       )}
     </element>

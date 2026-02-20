@@ -15,17 +15,19 @@ import { selectGameStatus, selectLineScore, selectTeams } from '../features/game
 import { resetTitle, setTitle } from '../screen.js';
 import useKey from '../hooks/useKey.js';
 
-const PLAYS = 'PLAYS';
+const GAME_STATUS = 'GAME_STATUS';
 const BOX_SCORE = 'BOX_SCORE';
+const SCORING_PLAYS = 'SCORING_PLAYS';
 
 function LiveGame()  {
   const gameStatus = useSelector(selectGameStatus);
   const linescore = useSelector(selectLineScore);
   const teams = useSelector(selectTeams);
-  const [view, setView] = React.useState(PLAYS);
+  const [view, setView] = React.useState(GAME_STATUS);
 
-  useKey('p', () => setView(PLAYS), { key: 'P', label: 'Plays' });
+  useKey('g', () => setView(GAME_STATUS), { key: 'G', label: 'Game Status' });
   useKey('b', () => setView(BOX_SCORE), { key: 'B', label: 'Box Score' });
+  useKey('p', () => setView(SCORING_PLAYS), { key: 'P', label: 'Scoring Plays' });
 
   useEffect(() => {
     if (get('title')) {
@@ -74,7 +76,7 @@ function LiveGame()  {
         </element>
       </element>
       <line orientation='horizontal' type='line' top={3} width='100%' />
-      {view === PLAYS && (
+      {view === GAME_STATUS && (
         <element top={4} left={1}>
           <element width='50%-1'>
             <element top={0} height={2}>
@@ -86,13 +88,18 @@ function LiveGame()  {
           </element>
           <line orientation='vertical' type='line' left='50%' />
           <element left='50%+2' width='50%-2'>
-            <AllPlays />
+            <AllPlays reverse />
           </element>
         </element>
       )}
       {view === BOX_SCORE && (
         <element top={4} left={1}>
           <BoxScore />
+        </element>
+      )}
+      {view === SCORING_PLAYS && (
+        <element top={4} left={1}>
+          <AllPlays scoringOnly />
         </element>
       )}
     </element>
