@@ -1,9 +1,10 @@
 import axios from 'axios';
 import reduxjsToolkit from '@reduxjs/toolkit';
 const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
-import { format } from 'date-fns';
+import {add, format} from 'date-fns';
 
 const initialState = {
+  scheduleDate: new Date(),
   loading: false,
   error: null,
   data: null,
@@ -21,7 +22,17 @@ export const fetchSchedule = createAsyncThunk(
 export const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
-  reducers: { },
+  reducers: {
+    nextDay(state) {
+      state.scheduleDate = add(state.scheduleDate, { days: 1 });
+    },
+    prevDay(state) {
+      state.scheduleDate = add(state.scheduleDate, { days: -1 });
+    },
+    setDate(state, action) {
+      state.scheduleDate = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchSchedule.pending, (state) => {
       state.loading = true;
@@ -56,5 +67,11 @@ export const selectData = createSelector(
   schedule => schedule.data
 );
 
+export const selectScheduleDate = createSelector(
+  scheduleSelector,
+  schedule => schedule.scheduleDate
+);
+
+export const { nextDay, prevDay, setDate } = scheduleSlice.actions;
 
 export default scheduleSlice.reducer;

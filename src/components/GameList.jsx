@@ -1,9 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useCallback, useEffect, useRef} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
-import { add, format } from 'date-fns';
-import { fetchSchedule, selectData, selectLoading } from '../features/schedule.js';
-import { teamFavoriteStar } from '../utils.js';
+import {format} from 'date-fns';
+import {
+  fetchSchedule,
+  nextDay,
+  prevDay,
+  selectData,
+  selectLoading,
+  selectScheduleDate,
+  setDate
+} from '../features/schedule.js';
+import {teamFavoriteStar} from '../utils.js';
 import Grid from './Grid.js';
 import useKey from '../hooks/useKey.js';
 
@@ -112,8 +120,8 @@ function GameList({ onGameSelect }) {
   const dispatch = useDispatch();
   const schedule = useSelector(selectData);
   const loading = useSelector(selectLoading);
+  const date = useSelector(selectScheduleDate);
   const timerRef = useRef(null);
-  const [date, setDate] = useState(new Date());
   let games = [];
   if (schedule && schedule.dates.length > 0) {
     games = schedule.dates[0].games.slice().sort(compareGames);
@@ -125,9 +133,9 @@ function GameList({ onGameSelect }) {
     return () => clearInterval(timerRef.current);
   }, [date]);
 
-  useKey('p', useCallback(() => setDate(prev => add(prev, { days: -1 })), []), { key: 'P', label: 'Prev Day' });
-  useKey('n', useCallback(() => setDate(prev => add(prev, { days: 1 })), []), { key: 'N', label: 'Next Day' });
-  useKey('t', useCallback(() => setDate(new Date()), []), { key: 'T', label: 'Today' });
+  useKey('p', useCallback(() => dispatch(prevDay()), []), { key: 'P', label: 'Prev Day' });
+  useKey('n', useCallback(() => dispatch(nextDay()), []), { key: 'N', label: 'Next Day' });
+  useKey('t', useCallback(() => dispatch(setDate(new Date())), []), { key: 'T', label: 'Today' });
 
   const handleGameSelect = (idx) => {
     const selected = games[idx];
