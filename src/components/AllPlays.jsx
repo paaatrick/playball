@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { selectAllPlays, selectTeams } from '../features/games.js';
 
 import { get } from '../config.js';
@@ -22,11 +23,11 @@ function getPlayResultColor(play) {
 }
 
 function formatOut(out) {
-  return ` {bold}${out} out{/}`;
+  return ` {bold}${out} out${out > 1 ? 's' : ''}{/}`;
 }
 
 
-function AllPlays() {
+function AllPlays({ reverse, scoringOnly }) {
   const plays = useSelector(selectAllPlays);
   const teams = useSelector(selectTeams);
 
@@ -37,23 +38,37 @@ function AllPlays() {
     ' {/}'
   );
 
-  let inning = '';
-  const lines = [];
-  plays && plays.slice().reverse().forEach((play, playIdx, plays) => {
-    let lastPlay;
-    if (playIdx < plays.length - 1) {
-      lastPlay = plays[playIdx + 1];
-    }
+  const playsByInning = {};
+  plays?.forEach((play) => {
     const playInning = play.about.halfInning + ' ' + play.about.inning;
-    if (playInning !== inning) {
-      inning = playInning;
-      if (lines.length > 0) {
-        lines.push('');
-      }
-      lines.push(`{bold}[${inning.toUpperCase()}]{/}`);
-    }
 
-    if (play.about.isComplete) {
+    play.playEvents?.forEach((event) => {
+      if (event.type === 'action') {
+        if (scoringOnly && !event.details.isScoringPlay) {
+          return;
+        }
+        if (event.details.eventType === 'batter_timeout' || event.details.eventType === 'mound_visit') {
+          return;
+        }
+        let line = '';
+        if (event.details.event) {
+          line += `{${get('color.other-event')}-fg}[${event.details.event}]{/} `;
+        }
+        line += event.details.description;
+        if (event.details.isOut) {
+          line += formatOut(event.count?.outs);
+        }
+        if (event.isScoringPlay || event.details.isScoringPlay) {
+          line += formatScoreDetail(event.details);
+        }
+        if (!(playInning in playsByInning)) {
+          playsByInning[playInning] = [];
+        }
+        playsByInning[playInning].push(line);
+      }
+    });
+
+    if (play.about.isComplete && (!scoringOnly || play.about.isScoringPlay)) {
       const color = getPlayResultColor(play);
       let line = `{${color}-fg}[${play.result.event}]{/} ${play.result.description}`;
       if (play.about.hasOut) {
@@ -65,31 +80,38 @@ function AllPlays() {
       if (play.about.isScoringPlay) {
         line += formatScoreDetail(play.result);
       }
-      lines.push(line);
-    }
-
-    play.playEvents && play.playEvents.slice().reverse().forEach((event, eventIdx, events) => {
-      if (event.type === 'action') {
-        let line = '';
-        if (event.details.event) {
-          line += `{${get('color.other-event')}-fg}[${event.details.event}]{/} `;
-        }
-        line += event.details.description;
-        if (event.isScoringPlay || event.details.isScoringPlay) {
-          line += formatScoreDetail(event.details);
-        }
-        const currentOut = event.count?.outs;
-        let prevOut = lastPlay ? lastPlay.count.outs : 0;
-        if (eventIdx < events.length - 1) {
-          prevOut = events[eventIdx + 1].count?.outs;
-        }
-        if (currentOut > prevOut) {
-          line += formatOut(currentOut);
-        }
-        lines.push(line);
+      if (!(playInning in playsByInning)) {
+        playsByInning[playInning] = [];
       }
-    });
+      playsByInning[playInning].push(line);
+    }
   });
+
+  const lines = [];
+  const inningKeys = Object.keys(playsByInning);
+  if (reverse) {
+    inningKeys.reverse();
+  }
+  inningKeys.forEach(inning => {
+    if (lines.length > 0) {
+      lines.push('');
+    }
+    lines.push(`{bold}[${inning.toUpperCase()}]{/}`);
+    if (reverse) {
+      lines.push(...playsByInning[inning].slice().reverse());
+    } else {
+      lines.push(...playsByInning[inning]);
+    }
+  });
+
+  if (lines.length === 0) {
+    if (scoringOnly) {
+      lines.push('No scoring plays yet');
+    } else {
+      lines.push('No plays yet');
+    }
+  }
+
   return (
     <box
       content={lines.join('\n')}
@@ -104,5 +126,10 @@ function AllPlays() {
     />
   );
 }
+
+AllPlays.propTypes = {
+  reverse: PropTypes.bool,
+  scoringOnly: PropTypes.bool,
+};
 
 export default AllPlays;
