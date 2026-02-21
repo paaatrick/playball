@@ -17,6 +17,7 @@ program
   .description(pkg.description)
   .version(pkg.version)
   .option('--replay <gameId>', 'Replay a game by game ID')
+  .option('--date <date>', 'Open schedule to specific date (YYYY-MM-DD)')
   .action(main)
   .hook('postAction', () => notifier.notify({
     isGlobal: true,

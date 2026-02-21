@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
+import {parseISO} from 'date-fns';
 import GameList from './GameList.js';
 import HelpBar from './HelpBar.js';
-import { setReplayGame, setLiveGame } from '../features/games.js';
+import {setLiveGame, setReplayGame} from '../features/games.js';
 import Game from './Game.js';
 import useKey from '../hooks/useKey.js';
 import Standings from './Standings.js';
+import {setDate} from '../features/schedule.js';
 
 const SCHEDULE = 'schedule';
 const STANDINGS = 'standings';
 const GAME = 'game';
 
-function App({ replayId }) {
+function App({ replayId, defaultDate }) {
   const [view, setView] = useState(SCHEDULE);
   const dispatch = useDispatch();
 
@@ -35,6 +37,12 @@ function App({ replayId }) {
         .catch(() => setView(SCHEDULE));
     }
   }, [replayId]);
+
+  useEffect(() => {
+    if (defaultDate) {
+      dispatch(setDate(parseISO(defaultDate)));
+    }
+  }, [defaultDate]);
   
   return (
     <element>
@@ -52,6 +60,7 @@ function App({ replayId }) {
 
 App.propTypes = {
   replayId: PropTypes.string,
+  defaultDate: PropTypes.string,
 };
 
 export default App;

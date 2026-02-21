@@ -20,7 +20,7 @@ export default async function startInterface(options) {
   const reactBlessed = await import('react-blessed');
   reactBlessed.render(
     <Provider store={store}>
-      <App replayId={options.replay} />
+      <App replayId={options.replay} defaultDate={options.date} />
     </Provider>, 
     screen()
   );
