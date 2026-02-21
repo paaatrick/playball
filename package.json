@@ -40,7 +40,7 @@
   "dependencies": {
     "@date-fns/utc": "^2.1.1",
     "@reduxjs/toolkit": "^1.8.0",
-    "axios": "^0.26.1",
+    "axios": "^0.30.3",
     "blessed": "^0.1.81",
     "commander": "^11.0.0",
     "conf": "^11.0.1",
