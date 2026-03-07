@@ -118,6 +118,11 @@ const schema = {
     type: 'number',
     default: 0,
     minimum: 0,
+  },
+  'sport': {
+    type: 'string',
+    enum: ['mlb', 'wbc'],
+    default: 'mlb',
   }
 };
 

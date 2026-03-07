@@ -9,3 +9,24 @@ export function teamFavoriteStar(team) {
   }
   return '';
 }
+
+/**
+ * Get the sport ID for API calls
+ * @returns {string} '51' for WBC, '1' for MLB
+ */
+export function getSportId() {
+  // ENV override takes precedence
+  const envSport = process.env.PLAYBALL_SPORT?.toLowerCase();
+  const sport = envSport || get('sport') || 'mlb';
+
+  return sport === 'wbc' ? '51' : '1';
+}
+
+/**
+ * Get the current sport setting
+ * @returns {string} 'mlb' or 'wbc'
+ */
+export function getSport() {
+  const envSport = process.env.PLAYBALL_SPORT?.toLowerCase();
+  return envSport || get('sport') || 'mlb';
+}

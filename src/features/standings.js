@@ -1,6 +1,7 @@
 import axios from 'axios';
 import reduxjsToolkit from '@reduxjs/toolkit';
 const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
+import { getSport } from '../utils.js';
 
 const initialState = {
   loading: false,
@@ -13,9 +14,21 @@ const SEASON = new Date().getFullYear();
 export const fetchStandings = createAsyncThunk(
   'standings/fetch',
   async () => {
-    const url = `https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=${SEASON}&standingsTypes=regularSeason&hydrate=division,team`;
-    const response = await axios.get(url);
-    return response.data;
+    const sport = getSport();
+
+    if (sport === 'wbc') {
+      // WBC standings - try sportId-based endpoint
+      // If no data, return empty structure (component will handle gracefully)
+      const response = await axios.get(
+        `https://statsapi.mlb.com/api/v1/standings?sportId=51&season=${SEASON}`
+      );
+      return response.data;
+    } else {
+      // MLB standings (existing logic)
+      const url = `https://statsapi.mlb.com/api/v1/standings?leagueId=103,104&season=${SEASON}&standingsTypes=regularSeason&hydrate=division,team`;
+      const response = await axios.get(url);
+      return response.data;
+    }
   }
 );
   

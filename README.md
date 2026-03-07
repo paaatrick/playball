@@ -69,6 +69,32 @@ key | action
 ----|--------
 <kbd>&darr;</kbd>/<kbd>j</kbd>, <kbd>&uarr;</kbd>/<kbd>k</kbd> | scroll list of all plays
 
+### World Baseball Classic
+
+Watch World Baseball Classic games by setting the sport configuration:
+
+```shell
+playball config sport wbc
+```
+
+Or use an environment variable for one-time viewing:
+
+```shell
+PLAYBALL_SPORT=wbc playball
+```
+
+To switch back to MLB:
+
+```shell
+playball config sport mlb
+```
+
+When running via Docker:
+
+```shell
+docker run -it --rm -e PLAYBALL_SPORT=wbc paaatrick0/playball
+```
+
 ### Configuration
 
 Playball can be configured using the `config` subcommand. To list the current configuration values run the subcommand with no additional arguments:
@@ -132,6 +158,7 @@ key | description | default | allowed values
 `favorites` | Teams to highlight in schedule and standings views | | Any one of the following: `ATL`, `AZ`, `BAL`, `BOS`, `CHC`, `CIN`, `CLE`, `COL`, `CWS`, `DET`, `HOU`, `KC`, `LAA`, `LAD`, `MIA`, `MIL`, `MIN`, `NYM`, `NYY`, `OAK`, `PHI`, `PIT`, `SD`, `SEA`, `SF`, `STL`, `TB`, `TEX`, `TOR`, `WSH`. Or a comma-separated list of multiple (e.g. `SEA,MIL`).<br/><br />Note: in some terminals the list must be quoted: `playball config favorites "SEA,MIL"`
 `title` | If enabled, the terminal title will be set to the score of the current game | `false` | `false`, `true`
 `live-delay` | Number of seconds to delay the live game stream. Useful when watching with delayed broadcast streams. | `0` (no delay) | Any positive number
+`sport` | Which sport/league to display | `mlb` | `mlb`, `wbc`
 
 ### Development
 ```
