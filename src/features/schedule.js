@@ -2,6 +2,7 @@ import axios from 'axios';
 import reduxjsToolkit from '@reduxjs/toolkit';
 const { createAsyncThunk, createSlice, createSelector } = reduxjsToolkit;
 import {add, format} from 'date-fns';
+import { getSportId } from '../utils.js';
 
 const initialState = {
   scheduleDate: new Date(),
@@ -14,7 +15,8 @@ export const fetchSchedule = createAsyncThunk(
   'schedule/fetch',
   async (date) => {
     const dateStr = format(date, 'MM/dd/yyyy');
-    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=team,linescore&date=${dateStr}`);
+    const sportId = getSportId();
+    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=${sportId}&hydrate=team,linescore&date=${dateStr}`);
     return response.data;
   }
 );
