@@ -219,4 +219,14 @@ export const selectProbablePitchers = createSelector(
   gameData => gameData.probablePitchers
 );
 
+export const selectReview = createSelector(
+  selectGameData,
+  gameData => gameData.review
+);
+
+export const selectAbsChallenges = createSelector(
+  selectGameData,
+  gameData => gameData.absChallenges
+);
+
 export default gamesSlice.reducer;
