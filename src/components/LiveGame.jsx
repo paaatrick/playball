@@ -9,6 +9,7 @@ import Matchup from './Matchup.js';
 import AtBat from './AtBat.js';
 import AllPlays from './AllPlays.js';
 import InningDisplay from './InningDisplay.js';
+import StrikeZone from './StrikeZone.js';
 
 import { get } from '../config.js';
 import { selectGameStatus, selectLineScore, selectTeams } from '../features/games.js';
@@ -82,7 +83,10 @@ function LiveGame()  {
             <element top={0} height={2}>
               <Matchup />
             </element>
-            <element top={3}>
+            <element top={3} height={9} width={24}>
+              <StrikeZone />
+            </element>
+            <element top={13}>
               <AtBat />
             </element>
           </element>
