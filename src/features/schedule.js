@@ -16,7 +16,7 @@ export const fetchSchedule = createAsyncThunk(
   async (date) => {
     const dateStr = format(date, 'MM/dd/yyyy');
     const sportId = getSportId();
-    const response = await axios.get(`http://statsapi.mlb.com/api/v1/schedule?sportId=${sportId}&hydrate=team,linescore&date=${dateStr}`);
+    const response = await axios.get(`https://statsapi.mlb.com/api/v1/schedule?sportId=${sportId}&hydrate=team,linescore&date=${dateStr}`);
     return response.data;
   }
 );
