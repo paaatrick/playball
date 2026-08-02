@@ -12,10 +12,12 @@ import {
   setDate
 } from '../features/schedule.js';
 import {teamFavoriteStar} from '../utils.js';
+import {formatAnnouncedGameTime, formatExceptionalGameStatus} from '../gameStatus.js';
+import {compareGameInnings} from '../gameSort.js';
 import Grid from './Grid.js';
 import useKey from '../hooks/useKey.js';
 
-const formatGame = game => {
+const formatGame = (game, scheduleDate) => {
   const startTime = game.status.startTimeTBD ? 'TBD' : format(new Date(game.gameDate), 'p');
   const start = (game.doubleHeader === 'Y' && game.gameNumber > 1) ? 
     'Game ' + game.gameNumber :
@@ -27,6 +29,15 @@ const formatGame = game => {
   let content = [start, teamName(game.teams.away), teamName(game.teams.home)];
   const gameState = game.status.abstractGameCode;
   const detailedState = game.status.detailedState;
+  const exceptionalStatus = formatExceptionalGameStatus(game.status);
+  if (exceptionalStatus) {
+    const announcedTime = formatAnnouncedGameTime(game, scheduleDate);
+    content[0] = exceptionalStatus;
+    if (announcedTime) {
+      content[0] += ' | ' + announcedTime;
+    }
+    return content.map(s => ' ' + s).join('\n');
+  }
   switch (gameState) {
   case 'P':
     break;
@@ -84,20 +95,6 @@ const GAME_STATE_ORDER = {
 };
 function compareGameState(a, b) {
   return GAME_STATE_ORDER[a.status.abstractGameCode] - GAME_STATE_ORDER[b.status.abstractGameCode];
-}
-
-function compareGameInnings(a, b) {
-  const inningCompare = b.linescore.currentInning - a.linescore.currentInning;
-  if (inningCompare !== 0) {
-    return inningCompare;
-  }
-  if (a.isTopInning && !b.isTopInning) {
-    return -1;
-  }
-  if (b.isTopInning && !a.isTopInning) {
-    return 1;
-  }
-  return 0;
 }
 
 function compareGames(a, b) {
@@ -159,7 +156,7 @@ function GameList({ onGameSelect }) {
         {(schedule && games.length === 0) && <box {...messageStyle} content='No games today' />}
         {(schedule && games.length > 0) && (
           <Grid 
-            items={games.map(formatGame)}
+            items={games.map(game => formatGame(game, date))}
             itemHeight={5}
             itemMinWidth={34}
             onSelect={handleGameSelect}

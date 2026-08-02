@@ -17,7 +17,7 @@
     "start": "babel src --out-dir dist --watch",
     "prepublishOnly": "npm run build",
     "react-devtools": "react-devtools",
-    "test": "echo \"No tests yet\""
+    "test": "node test/gameStatus.test.js"
   },
   "bin": {
     "playball": "./bin/playball.js"

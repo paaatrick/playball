@@ -12,8 +12,10 @@ import {
 import PreviewGame from './PreviewGame.js';
 import LiveGame from './LiveGame.js';
 import FinishedGame from './FinishedGame.js';
+import StatusGame from './StatusGame.js';
 
 import log from '../logger.js';
+import {getExceptionalGameState} from '../gameStatus.js';
 
 function Game() {
   const dispatch = useDispatch();
@@ -46,7 +48,10 @@ function Game() {
     return <element />;
   }
 
-  let Wrapped = null;
+  let Wrapped;
+  if (getExceptionalGameState(game.gameData?.status)) {
+    return <element><StatusGame game={game} /></element>;
+  }
   switch (game.gameData?.status?.abstractGameCode) {
   case 'P':
     Wrapped = PreviewGame;
@@ -60,7 +65,7 @@ function Game() {
   }
 
   return (
-    <element><Wrapped /></element>
+    <element>{Wrapped && <Wrapped />}</element>
   );
 }
 
