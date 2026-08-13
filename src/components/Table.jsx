@@ -7,7 +7,7 @@ function formatRow(row, widths) {
     .join('');
 }
 
-function Table({ headers, widths, rows, ...rest }) {
+function Table({ headers, widths, rows, top = 0, ...rest }) {
   const resolvedWidths = widths.map((width, idx) => {
     if (width !== 'auto') {
       return width;
@@ -20,12 +20,14 @@ function Table({ headers, widths, rows, ...rest }) {
   const headerRow = formatRow(headers, resolvedWidths);
   const contentRows = rows.map(row => formatRow(row, resolvedWidths));
 
+  // The header and the rows are siblings rather than children of a wrapping
+  // element so that the table can be scrolled by a scrollable parent. Blessed
+  // only offsets a scrollable element's direct children.
   return (
-    <element {...rest}>
+    <React.Fragment>
       <box
-        top={0}
-        left={0}
-        width='100%'
+        {...rest}
+        top={top}
         height={1}
         fg='black'
         bg='white'
@@ -33,14 +35,13 @@ function Table({ headers, widths, rows, ...rest }) {
         content={headerRow}
       />
       <box
-        top={1}
-        left={0}
-        width='100%'
+        {...rest}
+        top={top + 1}
         height={rows.length}
         wrap={false}
         content={contentRows.join('\n')}
       />
-    </element>
+    </React.Fragment>
   );
 }
 

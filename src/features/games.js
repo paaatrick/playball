@@ -169,9 +169,24 @@ export const selectAllPlays = createSelector(
   plays => plays.allPlays
 );
 
-export const selectBoxscore = createSelector(
+const selectBoxscoreRoot = createSelector(
   selectLiveData,
-  data => data.boxscore?.teams
+  data => data.boxscore
+);
+
+export const selectBoxscore = createSelector(
+  selectBoxscoreRoot,
+  boxscore => boxscore?.teams
+);
+
+export const selectGameInfo = createSelector(
+  selectBoxscoreRoot,
+  boxscore => boxscore?.info
+);
+
+export const selectPitchingNotes = createSelector(
+  selectBoxscoreRoot,
+  boxscore => boxscore?.pitchingNotes
 );
 
 export const selectLineScore = createSelector(
