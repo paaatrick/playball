@@ -11,7 +11,8 @@ import {
   selectScheduleDate,
   setDate
 } from '../features/schedule.js';
-import {teamFavoriteStar} from '../utils.js';
+import {gameHasFavoriteTeam, teamFavoriteStar} from '../utils.js';
+import {get} from '../config.js';
 import {formatAnnouncedGameTime, formatExceptionalGameStatus} from '../gameStatus.js';
 import {compareGameInnings} from '../gameSort.js';
 import Grid from './Grid.js';
@@ -98,6 +99,16 @@ function compareGameState(a, b) {
 }
 
 function compareGames(a, b) {
+  // Favorites-first: games with at least one favorited team sort before non-favorites
+  if (get('sort-by-favorites')) {
+    const aHasFav = gameHasFavoriteTeam(a);
+    const bHasFav = gameHasFavoriteTeam(b);
+    if (aHasFav !== bHasFav) {
+      return aHasFav ? -1 : 1;
+    }
+  }
+
+  // Then by game state: live -> pre-game -> finished
   const stateCompare = compareGameState(a, b);
   if (stateCompare !== 0) {
     return stateCompare;
