@@ -110,6 +110,10 @@ const schema = {
     },
     default: []
   },
+  'sort-by-favorites': {
+    type: 'boolean',
+    default: false,
+  },
   'title': {
     type: 'boolean',
     default: false,
