@@ -1,10 +1,12 @@
 import { get } from './config.js';
 
 /**
- * Check if a game involves any favorited team
+ * Check if a game involves any favorited team.
+ * @param {object} game
+ * @param {string[]} [favorites] - favorited team abbreviations; defaults to
+ *   the configured favorites when omitted
  */
-export function gameHasFavoriteTeam(game) {
-  const favorites = get('favorites');
+export function gameHasFavoriteTeam(game, favorites = get('favorites')) {
   return favorites.includes(game.teams.away.team.abbreviation) ||
          favorites.includes(game.teams.home.team.abbreviation);
 }

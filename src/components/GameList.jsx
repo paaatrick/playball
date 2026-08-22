@@ -11,10 +11,10 @@ import {
   selectScheduleDate,
   setDate
 } from '../features/schedule.js';
-import {gameHasFavoriteTeam, teamFavoriteStar} from '../utils.js';
+import {teamFavoriteStar} from '../utils.js';
 import {get} from '../config.js';
 import {formatAnnouncedGameTime, formatExceptionalGameStatus} from '../gameStatus.js';
-import {compareGameInnings} from '../gameSort.js';
+import {makeCompareGames} from '../gameSort.js';
 import Grid from './Grid.js';
 import useKey from '../hooks/useKey.js';
 
@@ -89,41 +89,6 @@ const formatGame = (game, scheduleDate) => {
   return content.map(s => ' ' + s).join('\n');
 };
 
-const GAME_STATE_ORDER = {
-  L: 0,
-  P: 1,
-  F: 2,
-};
-function compareGameState(a, b) {
-  return GAME_STATE_ORDER[a.status.abstractGameCode] - GAME_STATE_ORDER[b.status.abstractGameCode];
-}
-
-function compareGames(a, b) {
-  // Favorites-first: games with at least one favorited team sort before non-favorites
-  if (get('sort-by-favorites')) {
-    const aHasFav = gameHasFavoriteTeam(a);
-    const bHasFav = gameHasFavoriteTeam(b);
-    if (aHasFav !== bHasFav) {
-      return aHasFav ? -1 : 1;
-    }
-  }
-
-  // Then by game state: live -> pre-game -> finished
-  const stateCompare = compareGameState(a, b);
-  if (stateCompare !== 0) {
-    return stateCompare;
-  }
-
-  if (a.status.abstractGameCode === 'L') {
-    const inningCompare = compareGameInnings(a, b);
-    if (inningCompare !== 0) {
-      return inningCompare;
-    }
-  }
-
-  return 0;
-}
-
 function GameList({ onGameSelect }) {
   const dispatch = useDispatch();
   const schedule = useSelector(selectData);
@@ -132,6 +97,10 @@ function GameList({ onGameSelect }) {
   const timerRef = useRef(null);
   let games = [];
   if (schedule && schedule.dates.length > 0) {
+    const compareGames = makeCompareGames({
+      sortByFavorites: get('sort-by-favorites'),
+      favorites: get('favorites'),
+    });
     games = schedule.dates[0].games.slice().sort(compareGames);
   }
 
