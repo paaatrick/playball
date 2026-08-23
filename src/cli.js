@@ -38,7 +38,7 @@ program.command('config')
         console.log(`${key} = ${value}`);
       }
     } else if (!value) {
-      console.log(config.get(key));
+      console.log(config.serialize(config.get(key)));
     } else {
       config.set(key, value);
     }
