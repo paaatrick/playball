@@ -153,7 +153,15 @@ function deserialize(key, value) {
   return value;
 }
 
+function envVarName(key) {
+  return 'PLAYBALL_' + key.toUpperCase().replace(/[.-]/g, '_');
+}
+
 export function get(key) {
+  const envValue = process.env[envVarName(key)];
+  if (envValue != null) {
+    return deserialize(key, envValue);
+  }
   return config.get(key);
 }
 

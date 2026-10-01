@@ -139,27 +139,39 @@ To revert a setting to its default value provide the key and the `--unset` flag:
 playball config color.strike --unset
 ```
 
+Every setting can also be overridden for a single run with an environment variable, without persisting it to the config file. Take the key, uppercase it, and replace `.` and `-` with `_`, then prefix with `PLAYBALL_`. For example `live-delay` becomes `PLAYBALL_LIVE_DELAY` and `color.on-base` becomes `PLAYBALL_COLOR_ON_BASE`:
+
+```shell
+PLAYBALL_LIVE_DELAY=30 playball
+```
+
+This is especially useful with Docker, since a `--rm` container has no way to persist `playball config` changes between runs:
+
+```shell
+docker run -it --rm -e PLAYBALL_LIVE_DELAY=30 paaatrick0/playball
+```
+
 This table summarizes the available settings:
 
-key | description | default | allowed values
-----|-------------|---------|---------------
-`color.ball` | Color of dots representing balls in top row of game view | green | One of the following: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `grey`. Any of those colors may be prefixed by `bright-` or `light-` (for example `bright-green`). The exact color used will depend on your terminal settings. The value `default` may be used to specify the default text color for your terminal. Finally hex colors (e.g `#FFA500`) can be specified. If your terminal does not support true color, the closest supported color may be used. 
-`color.favorite-star` | Color of star indiciating favorite team in schedule and standing views | yellow | _See above_
-`color.in-play-no-out` | Color of result where ball was put in play and no out was made (single, double, etc) in list of plays in game view | blue | _See above_
-`color.in-play-out` | Color of result where ball was put in play and an out was made (flyout, fielder's choice, etc) in list of plays in game view | white | _See above_
-`color.in-play-runs-bg` | Background color for score update in list of plays in game view | white | _See above_
-`color.in-play-runs-fg` | Foreground color for score update in list of plays in game view | black | _See above_
-`color.on-base` | Color of diamonds representing runners on base in top row of game view | yellow | _See above_
-`color.other-event` | Color of other events (mound visit, injury delay, etc) in list of plays in game view | white | _See above_
-`color.out` | Color of dots representing outs in top row of game view | red | _See above_
-`color.strike` | Color of dots representing strikes in top row of game view | red | _See above_
-`color.strike-out` | Color of result where play ends on a strike (strike out) in list of plays in game view | red | _See above_
-`color.walk` | Color of result where play ends on a ball (walk, hit by pitch) in list of plays in game view | green | _See above_
-`favorites` | Teams to highlight in schedule and standings views | | Any one of the following: `ATL`, `AZ`, `BAL`, `BOS`, `CHC`, `CIN`, `CLE`, `COL`, `CWS`, `DET`, `HOU`, `KC`, `LAA`, `LAD`, `MIA`, `MIL`, `MIN`, `NYM`, `NYY`, `OAK`, `PHI`, `PIT`, `SD`, `SEA`, `SF`, `STL`, `TB`, `TEX`, `TOR`, `WSH`. Or a comma-separated list of multiple (e.g. `SEA,MIL`).<br/><br />Note: in some terminals the list must be quoted: `playball config favorites "SEA,MIL"`
-`sort-by-favorites` | Sort games with favorite teams first in the schedule view | `false` | `false`, `true`
-`title` | If enabled, the terminal title will be set to the score of the current game | `false` | `false`, `true`
-`live-delay` | Number of seconds to delay the live game stream. Useful when watching with delayed broadcast streams. | `0` (no delay) | Any positive number
-`sport` | Which sport/league to display | `mlb` | `mlb`, `wbc`
+key | env variable | description | default | allowed values
+----|--------------|-------------|---------|---------------
+`color.ball` | `PLAYBALL_COLOR_BALL` | Color of dots representing balls in top row of game view | green | One of the following: `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`, `grey`. Any of those colors may be prefixed by `bright-` or `light-` (for example `bright-green`). The exact color used will depend on your terminal settings. The value `default` may be used to specify the default text color for your terminal. Finally hex colors (e.g `#FFA500`) can be specified. If your terminal does not support true color, the closest supported color may be used. 
+`color.favorite-star` | `PLAYBALL_COLOR_FAVORITE_STAR` | Color of star indiciating favorite team in schedule and standing views | yellow | _See above_
+`color.in-play-no-out` | `PLAYBALL_COLOR_IN_PLAY_NO_OUT` | Color of result where ball was put in play and no out was made (single, double, etc) in list of plays in game view | blue | _See above_
+`color.in-play-out` | `PLAYBALL_COLOR_IN_PLAY_OUT` | Color of result where ball was put in play and an out was made (flyout, fielder's choice, etc) in list of plays in game view | white | _See above_
+`color.in-play-runs-bg` | `PLAYBALL_COLOR_IN_PLAY_RUNS_BG` | Background color for score update in list of plays in game view | white | _See above_
+`color.in-play-runs-fg` | `PLAYBALL_COLOR_IN_PLAY_RUNS_FG` | Foreground color for score update in list of plays in game view | black | _See above_
+`color.on-base` | `PLAYBALL_COLOR_ON_BASE` | Color of diamonds representing runners on base in top row of game view | yellow | _See above_
+`color.other-event` | `PLAYBALL_COLOR_OTHER_EVENT` | Color of other events (mound visit, injury delay, etc) in list of plays in game view | white | _See above_
+`color.out` | `PLAYBALL_COLOR_OUT` | Color of dots representing outs in top row of game view | red | _See above_
+`color.strike` | `PLAYBALL_COLOR_STRIKE` | Color of dots representing strikes in top row of game view | red | _See above_
+`color.strike-out` | `PLAYBALL_COLOR_STRIKE_OUT` | Color of result where play ends on a strike (strike out) in list of plays in game view | red | _See above_
+`color.walk` | `PLAYBALL_COLOR_WALK` | Color of result where play ends on a ball (walk, hit by pitch) in list of plays in game view | green | _See above_
+`favorites` | `PLAYBALL_FAVORITES` | Teams to highlight in schedule and standings views | | Any one of the following: `ATL`, `AZ`, `BAL`, `BOS`, `CHC`, `CIN`, `CLE`, `COL`, `CWS`, `DET`, `HOU`, `KC`, `LAA`, `LAD`, `MIA`, `MIL`, `MIN`, `NYM`, `NYY`, `OAK`, `PHI`, `PIT`, `SD`, `SEA`, `SF`, `STL`, `TB`, `TEX`, `TOR`, `WSH`. Or a comma-separated list of multiple (e.g. `SEA,MIL`).<br/><br />Note: in some terminals the list must be quoted: `playball config favorites "SEA,MIL"`
+`sort-by-favorites` | `PLAYBALL_SORT_BY_FAVORITES` | Sort games with favorite teams first in the schedule view | `false` | `false`, `true`
+`title` | `PLAYBALL_TITLE` | If enabled, the terminal title will be set to the score of the current game | `false` | `false`, `true`
+`live-delay` | `PLAYBALL_LIVE_DELAY` | Number of seconds to delay the live game stream. Useful when watching with delayed broadcast streams. | `0` (no delay) | Any positive number
+`sport` | `PLAYBALL_SPORT` | Which sport/league to display | `mlb` | `mlb`, `wbc`
 
 ### Development
 ```
