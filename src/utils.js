@@ -23,11 +23,7 @@ export function teamFavoriteStar(team) {
  * @returns {string} '51' for WBC, '1' for MLB
  */
 export function getSportId() {
-  // ENV override takes precedence
-  const envSport = process.env.PLAYBALL_SPORT?.toLowerCase();
-  const sport = envSport || get('sport') || 'mlb';
-
-  return sport === 'wbc' ? '51' : '1';
+  return getSport() === 'wbc' ? '51' : '1';
 }
 
 /**
@@ -35,6 +31,5 @@ export function getSportId() {
  * @returns {string} 'mlb' or 'wbc'
  */
 export function getSport() {
-  const envSport = process.env.PLAYBALL_SPORT?.toLowerCase();
-  return envSport || get('sport') || 'mlb';
+  return get('sport')?.toLowerCase() || 'mlb';
 }
