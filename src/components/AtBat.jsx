@@ -1,11 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentPlay } from '../features/games.js';
+import { getPitchColor, getPitchEvents, getPitchMarker } from '../strikeZone.js';
 
 function AtBat() {
   const currentPlay = useSelector(selectCurrentPlay);
   const playEvents = currentPlay.playEvents;
   const playResult = currentPlay.about.isComplete ? currentPlay.result.description : '';
+
+  // Each pitch is marked the same way it is in the strike zone, so that the
+  // two can be read against each other
+  const markers = new Map();
+  getPitchEvents(playEvents).forEach((pitch, index) => {
+    const marker = getPitchMarker(pitch, index);
+    markers.set(pitch, `{${getPitchColor(pitch)}-fg}{bold}${marker}{/bold}{/} `);
+  });
 
   function formatEventReview(event, idx, allEvents) {
     let reviewDetails = undefined;
@@ -35,9 +44,9 @@ function AtBat() {
   } 
   if (playEvents && playEvents.length) {
     content += playEvents.slice().reverse().map((event, idx, allEvents) => {
-      let line = '';
+      let line = markers.get(event) || '  ';
       if (event.isPitch) {
-        line = `[${event.details.description}${formatEventReview(event, idx, allEvents)}] `;
+        line += `[${event.details.description}${formatEventReview(event, idx, allEvents)}] `;
         if (event.pitchData?.startSpeed) {
           line += `${event.pitchData.startSpeed} MPH `;
         }
