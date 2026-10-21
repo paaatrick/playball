@@ -1,6 +1,6 @@
 import {describe, it} from 'node:test';
 import assert from 'node:assert/strict';
-import {gameHasFavoriteTeam} from '../src/utils.js';
+import {formatHitData, gameHasFavoriteTeam} from '../src/utils.js';
 
 function makeGame(away, home) {
   return {
@@ -40,5 +40,34 @@ describe('gameHasFavoriteTeam', () => {
     // exact element match and must NOT match here.
     const game = makeGame('NYY', 'BOS');
     assert.strictEqual(gameHasFavoriteTeam(game, ['NY']), false);
+  });
+});
+
+describe('formatHitData', () => {
+  it('formats speed, angle, and distance', () => {
+    assert.strictEqual(
+      formatHitData({launchSpeed: 102.6, launchAngle: 8, totalDistance: 145}),
+      '102.6 MPH, 8° LA, 145 ft'
+    );
+  });
+
+  it('rounds angle and distance but keeps speed precision', () => {
+    assert.strictEqual(
+      formatHitData({launchSpeed: 88.3, launchAngle: 39.4, totalDistance: 283.6}),
+      '88.3 MPH, 39° LA, 284 ft'
+    );
+  });
+
+  it('skips the distance when it is missing', () => {
+    assert.strictEqual(
+      formatHitData({launchSpeed: 21.3, launchAngle: -30}),
+      '21.3 MPH, -30° LA'
+    );
+  });
+
+  it('returns an empty string for untracked balls', () => {
+    assert.strictEqual(formatHitData({trajectory: 'ground_ball'}), '');
+    assert.strictEqual(formatHitData(undefined), '');
+    assert.strictEqual(formatHitData(null), '');
   });
 });

@@ -169,6 +169,7 @@ key | env variable | description | default | allowed values
 `color.walk` | `PLAYBALL_COLOR_WALK` | Color of result where play ends on a ball (walk, hit by pitch) in list of plays in game view | green | _See above_
 `favorites` | `PLAYBALL_FAVORITES` | Teams to highlight in schedule and standings views | | Any one of the following: `ATL`, `AZ`, `BAL`, `BOS`, `CHC`, `CIN`, `CLE`, `COL`, `CWS`, `DET`, `HOU`, `KC`, `LAA`, `LAD`, `MIA`, `MIL`, `MIN`, `NYM`, `NYY`, `OAK`, `PHI`, `PIT`, `SD`, `SEA`, `SF`, `STL`, `TB`, `TEX`, `TOR`, `WSH`. Or a comma-separated list of multiple (e.g. `SEA,MIL`).<br/><br />Note: in some terminals the list must be quoted: `playball config favorites "SEA,MIL"`
 `sort-by-favorites` | `PLAYBALL_SORT_BY_FAVORITES` | Sort games with favorite teams first in the schedule view | `false` | `false`, `true`
+`hit-data` | `PLAYBALL_HIT_DATA` | Show exit velocity, launch angle, and distance for batted balls in the at-bat and play-by-play views, when tracked | `false` | `false`, `true`
 `title` | `PLAYBALL_TITLE` | If enabled, the terminal title will be set to the score of the current game | `false` | `false`, `true`
 `live-delay` | `PLAYBALL_LIVE_DELAY` | Number of seconds to delay the live game stream. Useful when watching with delayed broadcast streams. | `0` (no delay) | Any positive number
 `sport` | `PLAYBALL_SPORT` | Which sport/league to display | `mlb` | `mlb`, `wbc`

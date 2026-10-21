@@ -114,6 +114,10 @@ const schema = {
     type: 'boolean',
     default: false,
   },
+  'hit-data': {
+    type: 'boolean',
+    default: false,
+  },
   'title': {
     type: 'boolean',
     default: false,

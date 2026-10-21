@@ -10,6 +10,27 @@ export function gameHasFavoriteTeam(game, favorites) {
          favorites.includes(game.teams.home.team.abbreviation);
 }
 
+/**
+ * Format a batted ball's exit velocity, launch angle, and distance for
+ * display, e.g. "102.6 MPH, 8° LA, 145 ft". Balls not tracked (some fouls)
+ * have no launchSpeed and are left blank.
+ * @param {object} hitData the pitch event's hitData
+ * @returns {string} the formatted summary, or '' if untracked
+ */
+export function formatHitData(hitData) {
+  if (!hitData || hitData.launchSpeed == null) {
+    return '';
+  }
+  let text = `${hitData.launchSpeed} MPH`;
+  if (hitData.launchAngle != null) {
+    text += `, ${Math.round(hitData.launchAngle)}° LA`;
+  }
+  if (hitData.totalDistance) {
+    text += `, ${Math.round(hitData.totalDistance)} ft`;
+  }
+  return text;
+}
+
 export function teamFavoriteStar(team) {
   const style = get('color.favorite-star') + '-fg';
   if (get('favorites').includes(team.abbreviation)) {

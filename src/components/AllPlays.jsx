@@ -5,6 +5,7 @@ import { selectAllPlays, selectTeams } from '../features/games.js';
 
 import { get } from '../config.js';
 import style from '../style/index.js';
+import { formatHitData } from '../utils.js';
 
 
 function getPlayResultColor(play) {
@@ -71,6 +72,13 @@ function AllPlays({ reverse, scoringOnly }) {
     if (play.about.isComplete && (!scoringOnly || play.about.isScoringPlay)) {
       const color = getPlayResultColor(play);
       let line = `{${color}-fg}[${play.result.event}]{/} ${play.result.description}`;
+      if (get('hit-data')) {
+        const hitEvent = play.playEvents?.slice().reverse().find((event) => event.hitData);
+        const hit = formatHitData(hitEvent?.hitData);
+        if (hit) {
+          line += ` (${hit})`;
+        }
+      }
       if (play.about.hasOut) {
         const lastOut = play.playEvents[play.playEvents.length - 1].count.outs;
         if (lastOut !== play.count.outs) {
